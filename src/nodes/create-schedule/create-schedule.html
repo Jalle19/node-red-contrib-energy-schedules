@@ -1,0 +1,102 @@
+<script type="text/javascript">
+  RED.nodes.registerType('create-schedule', {
+    category: 'energy-schedules',
+    color: '#a6bbcf',
+    defaults: {
+      name: { value: 'create-schedule' },
+      hoursFrom: {
+        value: 0,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      hoursTo: {
+        value: 24,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      numHours: {
+        value: 0,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      mode: {
+        value: 'LOWEST',
+        required: true,
+        validate: RED.validators.typedInput('modeType', false),
+      },
+      priority: {
+        value: 0,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      lowerBound: {
+        value: null,
+        required: false,
+        validate: RED.validators.number(true),
+      },
+      upperBound: {
+        value: null,
+        required: false,
+        validate: RED.validators.number(true),
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-calendar',
+    label: function () {
+      return this.name || 'create-schedule'
+    },
+    oneditprepare: function () {
+      $('#node-input-mode').typedInput({
+        types: [
+          {
+            value: 'mode',
+            options: [
+              { value: 'LOWEST', label: 'LOWEST' },
+              { value: 'HIGHEST', label: 'HIGHEST' },
+            ],
+          },
+        ],
+      })
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="create-schedule">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-hoursFrom"><i class="fa fa-clock-o"></i> From hour</label>
+    <input type="text" id="node-input-hoursFrom" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-hoursTo"><i class="fa fa-clock-o"></i> To hour</label>
+    <input type="text" id="node-input-hoursTo" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-numHours">Number of hours</label>
+    <input type="number" id="node-input-numHours" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-mode">Mode</label>
+    <input type="text" id="node-input-mode" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-priority">Priority</label>
+    <input type="number" id="node-input-priority" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-lowerBound">Lower bound</label>
+    <input type="number" id="node-input-lowerBound" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-upperBound">Upper bound</label>
+    <input type="number" id="node-input-upperBound" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="create-schedule">
+  <p>Creates a schedule based on various criteria</p>
+</script>

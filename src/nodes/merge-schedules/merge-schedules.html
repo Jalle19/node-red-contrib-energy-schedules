@@ -1,0 +1,34 @@
+<script type="text/javascript">
+  RED.nodes.registerType('merge-schedules', {
+    category: 'energy-schedules',
+    color: '#6287b7',
+    defaults: {
+      name: { value: 'merge-schedules' },
+      scheduleName: {
+        value: '',
+        required: true,
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-calendar-plus-o',
+    label: function () {
+      return this.name || 'merge-schedules'
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="merge-schedules">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-scheduleName">New schedule name</label>
+    <input type="text" id="node-input-scheduleName" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="merge-schedules">
+  <p>Merges multiple schedules into one</p>
+</script>

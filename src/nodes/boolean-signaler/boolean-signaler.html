@@ -1,0 +1,26 @@
+<script type="text/javascript">
+  RED.nodes.registerType('boolean-signaler', {
+    category: 'energy-schedules',
+    color: '#c283dc',
+    defaults: {
+      name: { value: 'boolean-signaler' },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-wifi',
+    label: function () {
+      return this.name || 'boolean-signaler'
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="boolean-signaler">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="boolean-signaler">
+  <p>Outputs true or false depending on whether the schedule is active right now</p>
+</script>

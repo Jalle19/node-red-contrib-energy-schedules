@@ -1,0 +1,4 @@
+.idea/
+.node-red/
+node_modules
+src/**/*.js

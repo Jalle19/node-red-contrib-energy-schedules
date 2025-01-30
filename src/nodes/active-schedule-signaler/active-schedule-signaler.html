@@ -1,0 +1,26 @@
+<script type="text/javascript">
+  RED.nodes.registerType('active-schedule-signaler', {
+    category: 'energy-schedules',
+    color: '#c283dc',
+    defaults: {
+      name: { value: 'active-schedule-signaler' },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'font-awesome/fa-wifi',
+    label: function () {
+      return this.name || 'active-schedule-signaler'
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="active-schedule-signaler">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="active-schedule-signaler">
+  <p>Outputs the name of the schedule that is active right now</p>
+</script>

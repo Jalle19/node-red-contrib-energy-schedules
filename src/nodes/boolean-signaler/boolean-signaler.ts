@@ -1,0 +1,28 @@
+import { Node, NodeDef, NodeInitializer } from 'node-red'
+import { Schedule } from '../../schedule'
+import { booleanSignaler } from '../../signaler'
+
+interface BooleanSignalerNodeDef extends NodeDef {}
+
+type BooleanSignalerNode = Node
+
+const nodeInit: NodeInitializer = (RED): void => {
+  function BooleanSignalerNodeConstructor(this: BooleanSignalerNode, config: BooleanSignalerNodeDef): void {
+    RED.nodes.createNode(this, config)
+
+    this.error(config)
+
+    this.on('input', (msg, send, done) => {
+      const schedule = msg.payload as Schedule
+
+      msg.payload = booleanSignaler(new Date(), schedule)
+
+      send(msg)
+      done()
+    })
+  }
+
+  RED.nodes.registerType('boolean-signaler', BooleanSignalerNodeConstructor)
+}
+
+export = nodeInit
