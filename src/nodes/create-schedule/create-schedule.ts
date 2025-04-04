@@ -63,6 +63,10 @@ const nodeInit: NodeInitializer = (RED): void => {
       const summary = getScheduleItemSummary(schedule, new Date())
       this.status(createScheduleNodeStatus(summary))
 
+      // Store the schedule and summary in the node context too
+      this.context().set('schedule', schedule)
+      this.context().set('scheduleItemSummary', summary)
+
       send(msg)
       done()
     })
