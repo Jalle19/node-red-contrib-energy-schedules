@@ -1,6 +1,6 @@
 {
   "name": "@jalle1911/node-red-contrib-energy-schedules",
-  "version": "0.1.0",
+  "version": "0.1.8",
   "description": "An advanced Node-RED palette for scheduling energy usage efficiently",
   "main": "index.js",
   "scripts": {
