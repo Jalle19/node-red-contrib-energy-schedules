@@ -5,7 +5,7 @@ export enum ScheduleMode {
   HIGHEST = 'HIGHEST',
 }
 
-interface BaseScheduleOptions {
+export interface BaseScheduleOptions {
   name: string
   priority: number
 }

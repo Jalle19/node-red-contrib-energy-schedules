@@ -28,12 +28,16 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    const mergedSchedule = mergeSchedules([schedule1, schedule2], 'merged')
+    const mergedSchedule = mergeSchedules([schedule1, schedule2], {
+      name: 'merged',
+      priority: 1,
+    })
 
     // Make sure the original schedules have not been modified
     expect(schedule1.items.length).toEqual(4)
     expect(schedule2.items.length).toEqual(4)
     expect(mergedSchedule.name).toEqual('merged')
+    expect(mergedSchedule.priority).toEqual(1)
     expect(mergedSchedule.items.length).toEqual(8)
 
     // Check the item names to verify each item comes from the right schedule
@@ -70,9 +74,13 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    const mergedSchedule = mergeSchedules([schedule1, schedule2, schedule3], 'merged')
+    const mergedSchedule = mergeSchedules([schedule1, schedule2, schedule3], {
+      name: 'merged',
+      priority: 0,
+    })
 
     expect(mergedSchedule.name).toEqual('merged')
+    expect(mergedSchedule.priority).toEqual(0)
     expect(mergedSchedule.items.length).toEqual(24)
 
     // Check the item names to verify each item comes from the right schedule
@@ -107,9 +115,13 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    const mergedSchedule = mergeSchedules([schedule1, schedule2], 'merged')
+    const mergedSchedule = mergeSchedules([schedule1, schedule2], {
+      name: 'merged',
+      priority: 0,
+    })
 
     expect(mergedSchedule.name).toEqual('merged')
+    expect(mergedSchedule.priority).toEqual(0)
     expect(mergedSchedule.items.length).toEqual(4)
 
     // Check the item names to verify each item comes from the right schedule
