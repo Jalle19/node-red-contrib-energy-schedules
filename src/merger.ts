@@ -1,6 +1,6 @@
-import { Schedule, sortScheduleItems } from './schedule'
+import { BaseScheduleOptions, Schedule, sortScheduleItems } from './schedule'
 
-export const mergeSchedules = (schedules: Schedule[], name: string): Schedule => {
+export const mergeSchedules = (schedules: Schedule[], options: BaseScheduleOptions): Schedule => {
   // Sort schedules by priority, highest first
   schedules.sort((a, b) => {
     if (a.priority === b.priority) {
@@ -12,8 +12,8 @@ export const mergeSchedules = (schedules: Schedule[], name: string): Schedule =>
 
   // Start by copying the items from the first (highest priority) schedule
   let finalSchedule: Schedule = {
-    name,
-    priority: 0,
+    name: options.name,
+    priority: options.priority,
     items: [...schedules[0].items],
   }
 

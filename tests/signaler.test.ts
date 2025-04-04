@@ -49,7 +49,10 @@ describe('active schedule signaler works properly', () => {
       priority: 0,
     })
 
-    const mergedSchedule = mergeSchedules([schedule1, schedule2], 'merged')
+    const mergedSchedule = mergeSchedules([schedule1, schedule2], {
+      name: 'merged',
+      priority: 0,
+    })
 
     expect(activeScheduleSignaler(new Date('2025-01-13T02:00:00.000Z'), mergedSchedule)).toEqual('cheap')
     expect(activeScheduleSignaler(new Date('2025-01-13T02:59:59.000Z'), mergedSchedule)).toEqual('cheap')

@@ -1,6 +1,7 @@
 import { Node, NodeDef, NodeInitializer } from 'node-red'
 import { Schedule } from '../../schedule'
 import { booleanSignaler } from '../../signaler'
+import { creatBooleanSignalerStatus } from '../helpers'
 
 interface BooleanSignalerNodeDef extends NodeDef {}
 
@@ -10,12 +11,13 @@ const nodeInit: NodeInitializer = (RED): void => {
   function BooleanSignalerNodeConstructor(this: BooleanSignalerNode, config: BooleanSignalerNodeDef): void {
     RED.nodes.createNode(this, config)
 
-    this.error(config)
-
     this.on('input', (msg, send, done) => {
       const schedule = msg.payload as Schedule
 
-      msg.payload = booleanSignaler(new Date(), schedule)
+      const state = booleanSignaler(new Date(), schedule)
+      msg.payload = state
+
+      this.status(creatBooleanSignalerStatus(state))
 
       send(msg)
       done()

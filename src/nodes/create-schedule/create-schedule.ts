@@ -1,6 +1,7 @@
-import { Node, NodeDef, NodeInitializer, NodeMessage } from 'node-red'
-import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
+import { Node, NodeDef, NodeInitializer } from 'node-red'
+import { getScheduleItemSummary, makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
 import { parsePrices } from '../../parser'
+import { createScheduleNodeStatus } from '../helpers'
 
 interface CreateScheduleNodeDef extends NodeDef {
   hoursFrom: string
@@ -10,6 +11,11 @@ interface CreateScheduleNodeDef extends NodeDef {
   priority: string
   lowerBound: string
   upperBound: string
+}
+
+type DynamicBounds = {
+  lowerBound?: number
+  upperBound?: number
 }
 
 type CreateScheduleNode = Node
@@ -29,12 +35,37 @@ const nodeInit: NodeInitializer = (RED): void => {
       lowerBound: config.lowerBound ? parseFloat(config.lowerBound) : undefined,
       upperBound: config.upperBound ? parseFloat(config.upperBound) : undefined,
     }
-    this.error(scheduleOptions)
+
+    this.context().set('scheduleOptions', scheduleOptions)
 
     this.on('input', (msg, send, done) => {
-      const prices = parsePrices(msg.payload as unknown as string)
+      const prices = parsePrices(msg.payload)
 
-      msg.payload = makeSchedule(prices, scheduleOptions)
+      // Handle dynamic bounds
+      let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
+      const dynamicBounds: DynamicBounds | undefined = (msg as any)?.dynamicBounds
+
+      if (dynamicBounds !== undefined) {
+        if (dynamicBounds.lowerBound) {
+          currentScheduleOptions.lowerBound = dynamicBounds.lowerBound
+        }
+        if (dynamicBounds.upperBound) {
+          currentScheduleOptions.upperBound = dynamicBounds.upperBound
+        }
+
+        this.context().set('scheduleOptions', currentScheduleOptions)
+      }
+
+      const schedule = makeSchedule(prices, currentScheduleOptions)
+      msg.payload = schedule
+
+      // Show schedule item summary in the node status
+      const summary = getScheduleItemSummary(schedule, new Date())
+      this.status(createScheduleNodeStatus(summary))
+
+      // Store the schedule and summary in the node context too
+      this.context().set('schedule', schedule)
+      this.context().set('scheduleItemSummary', summary)
 
       send(msg)
       done()

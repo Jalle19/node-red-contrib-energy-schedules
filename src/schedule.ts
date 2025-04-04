@@ -5,7 +5,7 @@ export enum ScheduleMode {
   HIGHEST = 'HIGHEST',
 }
 
-interface BaseScheduleOptions {
+export interface BaseScheduleOptions {
   name: string
   priority: number
 }
@@ -30,6 +30,11 @@ export type Schedule = {
   name: string
   priority: number
   items: ScheduleItem[]
+}
+
+export type ScheduleItemSummary = {
+  total: number
+  upcoming: number
 }
 
 export const makeSchedule = (prices: Prices, options: ScheduleOptions): Schedule => {
@@ -121,4 +126,11 @@ const pricesToScheduleItems = (prices: Prices, scheduleOptions: BaseScheduleOpti
       value: price.value,
     }
   })
+}
+
+export const getScheduleItemSummary = (schedule: Schedule, now: Date): ScheduleItemSummary => {
+  return {
+    total: schedule.items.length,
+    upcoming: schedule.items.filter((item) => item.end > now).length,
+  }
 }
