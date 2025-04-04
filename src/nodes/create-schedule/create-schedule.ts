@@ -1,6 +1,7 @@
 import { Node, NodeDef, NodeInitializer } from 'node-red'
-import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
+import { getScheduleItemSummary, makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
 import { parsePrices } from '../../parser'
+import { createScheduleNodeStatus } from '../helpers'
 
 interface CreateScheduleNodeDef extends NodeDef {
   hoursFrom: string
@@ -55,7 +56,12 @@ const nodeInit: NodeInitializer = (RED): void => {
         this.context().set('scheduleOptions', currentScheduleOptions)
       }
 
-      msg.payload = makeSchedule(prices, currentScheduleOptions)
+      const schedule = makeSchedule(prices, currentScheduleOptions)
+      msg.payload = schedule
+
+      // Show schedule item summary in the node status
+      const summary = getScheduleItemSummary(schedule, new Date())
+      this.status(createScheduleNodeStatus(summary))
 
       send(msg)
       done()

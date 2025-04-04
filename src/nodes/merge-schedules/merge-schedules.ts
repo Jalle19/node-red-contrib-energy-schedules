@@ -1,6 +1,7 @@
 import { Node, NodeDef, NodeInitializer } from 'node-red'
-import { BaseScheduleOptions, Schedule } from '../../schedule'
+import { BaseScheduleOptions, getScheduleItemSummary, Schedule } from '../../schedule'
 import { mergeSchedules } from '../../merger'
+import { createScheduleNodeStatus } from '../helpers'
 
 interface MergeSchedulesNodeDef extends NodeDef {
   scheduleName: string
@@ -23,7 +24,12 @@ const nodeInit: NodeInitializer = (RED): void => {
     this.on('input', (msg, send, done) => {
       const schedules = msg.payload as Schedule[]
 
-      msg.payload = mergeSchedules(schedules, scheduleOptions)
+      const schedule = mergeSchedules(schedules, scheduleOptions)
+      msg.payload = schedule
+
+      // Show schedule item summary in the node status
+      const summary = getScheduleItemSummary(schedule, new Date())
+      this.status(createScheduleNodeStatus(summary))
 
       send(msg)
       done()

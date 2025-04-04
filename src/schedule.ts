@@ -32,6 +32,11 @@ export type Schedule = {
   items: ScheduleItem[]
 }
 
+export type ScheduleItemSummary = {
+  total: number
+  upcoming: number
+}
+
 export const makeSchedule = (prices: Prices, options: ScheduleOptions): Schedule => {
   // Narrow down the prices to those within hoursFrom and hoursTo
   prices = getHourSlice(prices, options.hoursFrom, options.hoursTo)
@@ -121,4 +126,11 @@ const pricesToScheduleItems = (prices: Prices, scheduleOptions: BaseScheduleOpti
       value: price.value,
     }
   })
+}
+
+export const getScheduleItemSummary = (schedule: Schedule, now: Date): ScheduleItemSummary => {
+  return {
+    total: schedule.items.length,
+    upcoming: schedule.items.filter((item) => item.end > now).length,
+  }
 }
