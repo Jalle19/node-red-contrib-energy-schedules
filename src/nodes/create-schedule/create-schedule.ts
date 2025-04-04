@@ -1,4 +1,4 @@
-import { Node, NodeDef, NodeInitializer, NodeMessage } from 'node-red'
+import { Node, NodeDef, NodeInitializer } from 'node-red'
 import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
 import { parsePrices } from '../../parser'
 
@@ -10,6 +10,11 @@ interface CreateScheduleNodeDef extends NodeDef {
   priority: string
   lowerBound: string
   upperBound: string
+}
+
+type DynamicBounds = {
+  lowerBound?: number
+  upperBound?: number
 }
 
 type CreateScheduleNode = Node
@@ -33,9 +38,24 @@ const nodeInit: NodeInitializer = (RED): void => {
     this.context().set('scheduleOptions', scheduleOptions)
 
     this.on('input', (msg, send, done) => {
-      const prices = parsePrices(msg.payload as unknown as string)
+      const prices = parsePrices(msg.payload)
 
-      msg.payload = makeSchedule(prices, scheduleOptions)
+      // Handle dynamic bounds
+      let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
+      const dynamicBounds: DynamicBounds | undefined = (msg as any)?.dynamicBounds
+
+      if (dynamicBounds !== undefined) {
+        if (dynamicBounds.lowerBound) {
+          currentScheduleOptions.lowerBound = dynamicBounds.lowerBound
+        }
+        if (dynamicBounds.upperBound) {
+          currentScheduleOptions.upperBound = dynamicBounds.upperBound
+        }
+
+        this.context().set('scheduleOptions', currentScheduleOptions)
+      }
+
+      msg.payload = makeSchedule(prices, currentScheduleOptions)
 
       send(msg)
       done()
