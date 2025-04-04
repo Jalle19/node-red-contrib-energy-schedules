@@ -29,7 +29,8 @@ const nodeInit: NodeInitializer = (RED): void => {
       lowerBound: config.lowerBound ? parseFloat(config.lowerBound) : undefined,
       upperBound: config.upperBound ? parseFloat(config.upperBound) : undefined,
     }
-    this.error(scheduleOptions)
+
+    this.context().set('scheduleOptions', scheduleOptions)
 
     this.on('input', (msg, send, done) => {
       const prices = parsePrices(msg.payload as unknown as string)

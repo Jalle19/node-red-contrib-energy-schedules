@@ -18,6 +18,8 @@ const nodeInit: NodeInitializer = (RED): void => {
       priority: parseInt(config.priority),
     }
 
+    this.context().set('scheduleOptions', scheduleOptions)
+
     this.on('input', (msg, send, done) => {
       const schedules = msg.payload as Schedule[]
 
