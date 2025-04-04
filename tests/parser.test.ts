@@ -23,4 +23,28 @@ describe('parses price data correctly', () => {
     expect(secondHour.end.getHours()).toEqual(2)
     expect(secondHour.value).toEqual(8.24)
   })
+
+  test('parses raw data correctly', () => {
+    const rawData = [
+      {
+        'start': new Date('2025-04-03T09:00:00+03:00'),
+        'end': new Date('2025-04-03T10:00:00+03:00'),
+        'value': 5.52,
+      },
+      {
+        'start': new Date('2025-04-03T10:00:00+03:00'),
+        'end': new Date('2025-04-03T11:00:00+03:00'),
+        'value': 5.43,
+      },
+    ]
+
+    const prices = parsePrices(rawData)
+    const firstHour = prices[0]
+    const secondHour = prices[1]
+
+    expect(firstHour.start.getHours()).toEqual(9)
+    expect(firstHour.value).toEqual(5.52)
+    expect(secondHour.start.getHours()).toEqual(10)
+    expect(secondHour.value).toEqual(5.43)
+  })
 })
