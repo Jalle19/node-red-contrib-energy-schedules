@@ -1,8 +1,11 @@
 import { NodeStatus } from 'node-red'
 import { ScheduleItemSummary } from '../schedule'
 
-export const createSignalerNodeStatus = (text: string): NodeStatus => {
-  return { fill: 'blue', shape: 'dot', text: text }
+export const creatBooleanSignalerStatus = (state: boolean): NodeStatus => {
+  const fill = state ? 'green' : 'red'
+  const text = state ? 'true' : 'false'
+
+  return { fill: fill, shape: 'dot', text: text }
 }
 
 export const createScheduleNodeStatus = (summary: ScheduleItemSummary): NodeStatus => {

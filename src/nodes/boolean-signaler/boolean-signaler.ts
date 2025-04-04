@@ -1,7 +1,7 @@
 import { Node, NodeDef, NodeInitializer } from 'node-red'
 import { Schedule } from '../../schedule'
 import { booleanSignaler } from '../../signaler'
-import { createSignalerNodeStatus } from '../helpers'
+import { creatBooleanSignalerStatus } from '../helpers'
 
 interface BooleanSignalerNodeDef extends NodeDef {}
 
@@ -17,7 +17,7 @@ const nodeInit: NodeInitializer = (RED): void => {
       const state = booleanSignaler(new Date(), schedule)
       msg.payload = state
 
-      this.status(createSignalerNodeStatus(state ? 'true' : 'false'))
+      this.status(creatBooleanSignalerStatus(state))
 
       send(msg)
       done()

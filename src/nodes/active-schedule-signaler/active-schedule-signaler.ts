@@ -1,7 +1,7 @@
 import { Node, NodeDef, NodeInitializer } from 'node-red'
 import { Schedule } from '../../schedule'
 import { activeScheduleSignaler } from '../../signaler'
-import { createSignalerNodeStatus } from '../helpers'
+import { creatBooleanSignalerStatus } from '../helpers'
 
 interface ActiveScheduleSignalerNodeDef extends NodeDef {}
 
@@ -21,7 +21,7 @@ const nodeInit: NodeInitializer = (RED): void => {
       msg.payload = scheduleName
 
       if (scheduleName) {
-        this.status(createSignalerNodeStatus(scheduleName))
+        this.status(scheduleName)
       }
 
       send(msg)
