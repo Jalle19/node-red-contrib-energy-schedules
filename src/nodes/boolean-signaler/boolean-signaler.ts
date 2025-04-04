@@ -10,8 +10,6 @@ const nodeInit: NodeInitializer = (RED): void => {
   function BooleanSignalerNodeConstructor(this: BooleanSignalerNode, config: BooleanSignalerNodeDef): void {
     RED.nodes.createNode(this, config)
 
-    this.error(config)
-
     this.on('input', (msg, send, done) => {
       const schedule = msg.payload as Schedule
 

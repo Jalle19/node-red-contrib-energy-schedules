@@ -13,8 +13,6 @@ const nodeInit: NodeInitializer = (RED): void => {
   ): void {
     RED.nodes.createNode(this, config)
 
-    this.error(config)
-
     this.on('input', (msg, send, done) => {
       const schedule = msg.payload as Schedule
 
