@@ -27,13 +27,13 @@ describe('parses price data correctly', () => {
   test('parses raw data correctly', () => {
     const rawData = [
       {
-        'start': new Date('2025-04-03T09:00:00+03:00'),
-        'end': new Date('2025-04-03T10:00:00+03:00'),
+        'start': '2025-04-03T09:00:00+03:00',
+        'end': '2025-04-03T10:00:00+03:00',
         'value': 5.52,
       },
       {
-        'start': new Date('2025-04-03T10:00:00+03:00'),
-        'end': new Date('2025-04-03T11:00:00+03:00'),
+        'start': '2025-04-03T10:00:00+03:00',
+        'end': '2025-04-03T11:00:00+03:00',
         'value': 5.43,
       },
     ]
@@ -46,5 +46,11 @@ describe('parses price data correctly', () => {
     expect(firstHour.value).toEqual(5.52)
     expect(secondHour.start.getHours()).toEqual(10)
     expect(secondHour.value).toEqual(5.43)
+  })
+
+  test('throws on unknown input', () => {
+    expect(() => {
+      parsePrices(23)
+    }).toThrow(TypeError)
   })
 })
