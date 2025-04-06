@@ -7,7 +7,7 @@ export const parsePrices = (prices: unknown): Prices => {
       return handleField(key, value)
     })
   } else if (Array.isArray(prices)) {
-    return prices.map(price => {
+    return prices.map((price) => {
       return {
         start: handleField('start', price['start']),
         end: handleField('end', price['end']),
@@ -16,7 +16,7 @@ export const parsePrices = (prices: unknown): Prices => {
     })
   }
 
-  throw new TypeError("Unable to parse prices, unknown input type")
+  throw new TypeError('Unable to parse prices, unknown input type')
 }
 
 const handleField = (key: string, value: any): any => {
