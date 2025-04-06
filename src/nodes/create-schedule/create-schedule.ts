@@ -1,7 +1,8 @@
-import { Node, NodeDef, NodeInitializer } from 'node-red'
-import { getScheduleItemSummary, makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
+import { NodeDef, NodeInitializer } from 'node-red'
+import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
 import { parsePrices } from '../../parser'
-import { createScheduleNodeStatus } from '../helpers'
+import { handleScheduleMessage } from '../helpers'
+import { CreateScheduleNode } from '../types'
 
 interface CreateScheduleNodeDef extends NodeDef {
   hoursFrom: string
@@ -17,8 +18,6 @@ type DynamicBounds = {
   lowerBound?: number
   upperBound?: number
 }
-
-type CreateScheduleNode = Node
 
 const nodeInit: NodeInitializer = (RED): void => {
   function CreateScheduleNodeConstructor(this: CreateScheduleNode, config: CreateScheduleNodeDef): void {
@@ -57,18 +56,8 @@ const nodeInit: NodeInitializer = (RED): void => {
       }
 
       const schedule = makeSchedule(prices, currentScheduleOptions)
-      msg.payload = schedule
 
-      // Show schedule item summary in the node status
-      const summary = getScheduleItemSummary(schedule, new Date())
-      this.status(createScheduleNodeStatus(summary))
-
-      // Store the schedule and summary in the node context too
-      this.context().set('schedule', schedule)
-      this.context().set('scheduleItemSummary', summary)
-
-      send(msg)
-      done()
+      handleScheduleMessage(this, schedule, msg, send, done)
     })
   }
 

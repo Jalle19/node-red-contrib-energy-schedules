@@ -107,9 +107,9 @@ describe('schedule item summary', () => {
       priority: 0,
     })
 
-    const summary = getScheduleItemSummary(schedule, new Date('2025-01-13T04:30:00+02:00'))
+    const summary = getScheduleItemSummary(schedule, new Date('2025-01-13T10:30:00+02:00'))
 
     expect(summary.total).toEqual(6)
-    expect(summary.upcoming).toEqual(1)
+    expect(summary.upcoming).toEqual(3)
   })
 })
