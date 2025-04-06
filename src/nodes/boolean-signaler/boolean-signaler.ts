@@ -15,11 +15,17 @@ const nodeInit: NodeInitializer = (RED): void => {
       const schedule = msg.payload as Schedule
 
       const state = booleanSignaler(new Date(), schedule)
-      msg.payload = state
 
       this.status(creatBooleanSignalerStatus(state))
 
-      send(msg)
+      // Send the message to different outputs depending on state
+      msg.payload = state
+      if (state) {
+        send([msg, null])
+      } else {
+        send([null, msg])
+      }
+
       done()
     })
   }
