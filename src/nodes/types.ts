@@ -6,6 +6,7 @@ export interface ScheduleNode extends Node {}
 
 export type CreateScheduleNode = ScheduleNode
 export type MergeSchedulesNode = ScheduleNode
+export type TakeAllScheduleNode = ScheduleNode
 
 // Copied from @types/node-red__registry
 export type SendFunction = (msg: NodeMessage | Array<NodeMessage | NodeMessage[] | null>) => void
