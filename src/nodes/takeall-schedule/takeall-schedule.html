@@ -1,0 +1,35 @@
+<script type="text/javascript">
+  RED.nodes.registerType('takeall-schedule', {
+    category: 'energy-schedules',
+    color: '#3c71b2',
+    defaults: {
+      name: { value: 'takeall-schedule' },
+      priority: {
+        value: 0,
+        required: true,
+        validate: RED.validators.number(),
+      },
+    },
+    inputs: 1,
+    outputs: 2,
+    icon: 'font-awesome/fa-object-group',
+    label: function () {
+      return this.name || 'takeall-schedule'
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="takeall-schedule">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-priority">Priority</label>
+    <input type="number" id="node-input-priority" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="takeall-schedule">
+  <p>Creates a schedule that is active for all items</p>
+</script>

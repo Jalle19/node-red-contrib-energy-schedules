@@ -4,6 +4,7 @@ import { getScheduleItemSummary, makeSchedule, ScheduleMode } from '../src/sched
 import { parsePrices } from '../src/parser'
 
 const PRICES_24HOURS = fs.readFileSync('tests/resources/prices.24hours.json').toString()
+const PRICES_48HOURS = fs.readFileSync('tests/resources/prices.48hours.json').toString()
 
 describe('schedules are correctly created', () => {
   it('generates 4 lowest value items correctly', () => {
@@ -91,6 +92,29 @@ describe('schedules are correctly created', () => {
     expect(schedule.name).toEqual('cheap')
     expect(schedule.items.length).toEqual(4)
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([6, 9, 10, 11])
+  })
+
+  it('handles multiple days correctly', () => {
+    const prices = parsePrices(PRICES_48HOURS)
+
+    const schedule = makeSchedule(prices, {
+      name: 'two-day-cheap',
+      hoursFrom: 0,
+      hoursTo: 24,
+      numHours: 4,
+      mode: ScheduleMode.LOWEST,
+      priority: 0,
+    })
+
+    expect(schedule.items.length).toEqual(8)
+    expect(schedule.items[0].start.getDate()).toEqual(13)
+    expect(schedule.items[0].value).toEqual(7.45)
+    expect(schedule.items[3].start.getDate()).toEqual(13)
+    expect(schedule.items[3].value).toEqual(6.12)
+    expect(schedule.items[4].start.getDate()).toEqual(14)
+    expect(schedule.items[4].value).toEqual(5.97)
+    expect(schedule.items[7].start.getDate()).toEqual(14)
+    expect(schedule.items[7].value).toEqual(5.96)
   })
 })
 

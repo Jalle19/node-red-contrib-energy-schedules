@@ -38,20 +38,29 @@ export type ScheduleItemSummary = {
 }
 
 export const makeSchedule = (prices: Prices, options: ScheduleOptions): Schedule => {
-  // Narrow down the prices to those within hoursFrom and hoursTo
-  prices = getHourSlice(prices, options.hoursFrom, options.hoursTo)
+  let selectedPrices: Prices = []
 
-  // Further narrow down the slice by excluding out of bounds values
-  if (options.mode === ScheduleMode.LOWEST) {
-    prices = getLowerSlice(prices, options.numHours, options.upperBound)
-  } else {
-    prices = getUpperSlice(prices, options.numHours, options.lowerBound)
+  const daySlices = getDaySlices(prices)
+
+  // Calculate slices separately for each day in the price data
+  for (const daySlice of daySlices) {
+    // Narrow down the prices to those within hoursFrom and hoursTo
+    let hourSlice = getHourSlice(daySlice, options.hoursFrom, options.hoursTo)
+
+    // Further narrow down the slice by excluding out of bounds values
+    if (options.mode === ScheduleMode.LOWEST) {
+      hourSlice = getLowerSlice(hourSlice, options.numHours, options.upperBound)
+    } else {
+      hourSlice = getUpperSlice(hourSlice, options.numHours, options.lowerBound)
+    }
+
+    selectedPrices = [...selectedPrices, ...hourSlice]
   }
 
   return {
     name: options.name,
     priority: options.priority,
-    items: sortScheduleItems(pricesToScheduleItems(prices, options)),
+    items: sortScheduleItems(pricesToScheduleItems(selectedPrices, options)),
   }
 }
 
@@ -61,6 +70,19 @@ export const makeTakeAllSchedule = (prices: Prices, options: BaseScheduleOptions
     priority: options.priority,
     items: sortScheduleItems(pricesToScheduleItems(prices, options)),
   }
+}
+
+export const getDaySlices = (prices: Prices): Prices[] => {
+  // Determine which days are available
+  const days = new Set(prices.map((price) => price.start.getDate()))
+
+  // Create separate slices for each day
+  let slices: Prices[] = []
+  for (const day of days) {
+    slices.push(prices.filter((price) => price.start.getDate() === day))
+  }
+
+  return slices
 }
 
 const getHourSlice = (prices: Prices, hoursFrom: number, hoursTo: number): Prices => {

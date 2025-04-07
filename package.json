@@ -25,6 +25,7 @@
     "version": ">=4.0.0",
     "nodes": {
       "create-schedule": "src/nodes/create-schedule/create-schedule.js",
+      "takeall-schedule": "src/nodes/takeall-schedule/takeall-schedule.js",
       "merge-schedules": "src/nodes/merge-schedules/merge-schedules.js",
       "boolean-signaler": "src/nodes/boolean-signaler/boolean-signaler.js",
       "active-schedule-signaler": "src/nodes/active-schedule-signaler/active-schedule-signaler.js"
