@@ -14,11 +14,6 @@ interface CreateScheduleNodeDef extends NodeDef {
   upperBound: string
 }
 
-type DynamicBounds = {
-  lowerBound?: number
-  upperBound?: number
-}
-
 const nodeInit: NodeInitializer = (RED): void => {
   function CreateScheduleNodeConstructor(this: CreateScheduleNode, config: CreateScheduleNodeDef): void {
     RED.nodes.createNode(this, config)
@@ -40,16 +35,14 @@ const nodeInit: NodeInitializer = (RED): void => {
     this.on('input', (msg, send, done) => {
       const prices = parsePrices(msg.payload)
 
-      // Handle dynamic bounds
+      // Handle dynamic options
       let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
-      const dynamicBounds: DynamicBounds | undefined = (msg as any)?.dynamicBounds
+      const dynamicOptions: Partial<ScheduleOptions> | undefined = (msg as any)?.dynamicOptions
 
-      if (dynamicBounds !== undefined) {
-        if (dynamicBounds.lowerBound) {
-          currentScheduleOptions.lowerBound = dynamicBounds.lowerBound
-        }
-        if (dynamicBounds.upperBound) {
-          currentScheduleOptions.upperBound = dynamicBounds.upperBound
+      if (dynamicOptions) {
+        currentScheduleOptions = {
+          ...currentScheduleOptions,
+          ...dynamicOptions,
         }
 
         this.context().set('scheduleOptions', currentScheduleOptions)
