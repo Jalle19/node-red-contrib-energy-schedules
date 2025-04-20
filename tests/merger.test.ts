@@ -1,16 +1,16 @@
 import { describe, expect, it } from '@jest/globals'
 import fs from 'node:fs'
-import { parsePrices } from '../src/parser'
+import { parseMtus } from '../src/parser'
 import { makeSchedule, makeTakeAllSchedule, ScheduleMode } from '../src/schedule'
 import { mergeSchedules } from '../src/merger'
 
-const PRICES_24HOURS = fs.readFileSync('tests/resources/prices.24hours.json').toString()
+const MTUS_24HOURS = fs.readFileSync('tests/resources/mtus.24hours.json').toString()
 
 describe('merger tests', () => {
   it('merges non-overlapping schedules correctly', () => {
-    const prices = parsePrices(PRICES_24HOURS)
+    const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(prices, {
+    let schedule1 = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
@@ -19,7 +19,7 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    let schedule2 = makeSchedule(prices, {
+    let schedule2 = makeSchedule(mtus, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
@@ -49,9 +49,9 @@ describe('merger tests', () => {
   })
 
   it('merges overlapping schedules according to priority', () => {
-    const prices = parsePrices(PRICES_24HOURS)
+    const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(prices, {
+    let schedule1 = makeSchedule(mtus, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
@@ -60,7 +60,7 @@ describe('merger tests', () => {
       priority: 1,
     })
 
-    let schedule2 = makeSchedule(prices, {
+    let schedule2 = makeSchedule(mtus, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
@@ -69,7 +69,7 @@ describe('merger tests', () => {
       priority: 2,
     })
 
-    let schedule3 = makeTakeAllSchedule(prices, {
+    let schedule3 = makeTakeAllSchedule(mtus, {
       name: 'neutral',
       priority: 0,
     })
@@ -95,9 +95,9 @@ describe('merger tests', () => {
   })
 
   it('merges overlapping schedules with equal priority', () => {
-    const prices = parsePrices(PRICES_24HOURS)
+    const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(prices, {
+    let schedule1 = makeSchedule(mtus, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
@@ -106,7 +106,7 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    let schedule2 = makeSchedule(prices, {
+    let schedule2 = makeSchedule(mtus, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,

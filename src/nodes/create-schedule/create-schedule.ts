@@ -1,6 +1,6 @@
 import { NodeDef, NodeInitializer } from 'node-red'
 import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
-import { parsePrices } from '../../parser'
+import { parseMtus } from '../../parser'
 import { handleScheduleMessage } from '../helpers'
 import { CreateScheduleNode } from '../types'
 
@@ -33,7 +33,7 @@ const nodeInit: NodeInitializer = (RED): void => {
     this.context().set('scheduleOptions', scheduleOptions)
 
     this.on('input', (msg, send, done) => {
-      const prices = parsePrices(msg.payload)
+      const mtus = parseMtus(msg.payload)
 
       // Handle dynamic options
       let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
@@ -48,7 +48,7 @@ const nodeInit: NodeInitializer = (RED): void => {
         this.context().set('scheduleOptions', currentScheduleOptions)
       }
 
-      const schedule = makeSchedule(prices, currentScheduleOptions)
+      const schedule = makeSchedule(mtus, currentScheduleOptions)
 
       handleScheduleMessage(this, schedule, msg, send, done)
     })

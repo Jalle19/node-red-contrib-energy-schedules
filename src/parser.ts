@@ -1,22 +1,22 @@
-import { Prices } from './prices'
+import { MarketTimeUnits } from './mtu'
 
-export const parsePrices = (prices: unknown): Prices => {
+export const parseMtus = (mtus: unknown): MarketTimeUnits => {
   // Handle both JSON and partially hydrated input (timestamps as strings)
-  if (typeof prices === 'string') {
-    return JSON.parse(prices, (key, value) => {
+  if (typeof mtus === 'string') {
+    return JSON.parse(mtus, (key, value) => {
       return handleField(key, value)
     })
-  } else if (Array.isArray(prices)) {
-    return prices.map((price) => {
+  } else if (Array.isArray(mtus)) {
+    return mtus.map((mtu) => {
       return {
-        start: handleField('start', price['start']),
-        end: handleField('end', price['end']),
-        value: price['value'],
+        start: handleField('start', mtu['start']),
+        end: handleField('end', mtu['end']),
+        value: mtu['value'],
       }
     })
   }
 
-  throw new TypeError('Unable to parse prices, unknown input type')
+  throw new TypeError('Unable to parse market time units, unknown input type')
 }
 
 const handleField = (key: string, value: any): any => {
