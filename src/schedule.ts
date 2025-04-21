@@ -13,7 +13,7 @@ export interface BaseScheduleOptions {
 export interface ScheduleOptions extends BaseScheduleOptions {
   hoursFrom: number
   hoursTo: number
-  numHours: number
+  numMtus: number
   mode: ScheduleMode
   lowerBound?: number
   upperBound?: number
@@ -49,9 +49,9 @@ export const makeSchedule = (mtus: MarketTimeUnits, options: ScheduleOptions): S
 
     // Further narrow down the slice by excluding out of bounds values
     if (options.mode === ScheduleMode.LOWEST) {
-      hourSlice = getLowerSlice(hourSlice, options.numHours, options.upperBound)
+      hourSlice = getLowerSlice(hourSlice, options.numMtus, options.upperBound)
     } else {
-      hourSlice = getUpperSlice(hourSlice, options.numHours, options.lowerBound)
+      hourSlice = getUpperSlice(hourSlice, options.numMtus, options.lowerBound)
     }
 
     selectedMtus = [...selectedMtus, ...hourSlice]
@@ -91,7 +91,7 @@ const getHourSlice = (mtus: MarketTimeUnits, hoursFrom: number, hoursTo: number)
   })
 }
 
-const getLowerSlice = (mtus: MarketTimeUnits, numHours: number, upperBound?: number): MarketTimeUnits => {
+const getLowerSlice = (mtus: MarketTimeUnits, numMtus: number, upperBound?: number): MarketTimeUnits => {
   mtus.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
     if (a.value === b.value) {
       return 0
@@ -100,7 +100,7 @@ const getLowerSlice = (mtus: MarketTimeUnits, numHours: number, upperBound?: num
     return a.value < b.value ? -1 : 1
   })
 
-  mtus = mtus.slice(0, numHours)
+  mtus = mtus.slice(0, numMtus)
 
   if (upperBound) {
     mtus = mtus.filter((p) => p.value < upperBound)
@@ -109,7 +109,7 @@ const getLowerSlice = (mtus: MarketTimeUnits, numHours: number, upperBound?: num
   return mtus
 }
 
-const getUpperSlice = (mtus: MarketTimeUnits, numHours: number, lowerBound?: number): MarketTimeUnits => {
+const getUpperSlice = (mtus: MarketTimeUnits, numMtus: number, lowerBound?: number): MarketTimeUnits => {
   mtus.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
     if (a.value === b.value) {
       return 0
@@ -118,7 +118,7 @@ const getUpperSlice = (mtus: MarketTimeUnits, numHours: number, lowerBound?: num
     return a.value > b.value ? -1 : 1
   })
 
-  mtus = mtus.slice(0, numHours)
+  mtus = mtus.slice(0, numMtus)
 
   if (lowerBound) {
     mtus = mtus.filter((p) => p.value > lowerBound)

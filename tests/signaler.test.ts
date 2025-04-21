@@ -15,7 +15,7 @@ describe('boolean signaler works properly', () => {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -35,7 +35,7 @@ describe('active schedule signaler works properly', () => {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -44,7 +44,7 @@ describe('active schedule signaler works properly', () => {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
     })

@@ -7,7 +7,7 @@ import { CreateScheduleNode } from '../types'
 interface CreateScheduleNodeDef extends NodeDef {
   hoursFrom: string
   hoursTo: string
-  numHours: string
+  numMtus: string
   mode: string
   priority: string
   lowerBound: string
@@ -23,7 +23,7 @@ const nodeInit: NodeInitializer = (RED): void => {
       name: config.name,
       hoursFrom: parseInt(config.hoursFrom),
       hoursTo: parseInt(config.hoursTo),
-      numHours: parseInt(config.numHours),
+      numMtus: parseInt(config.numMtus),
       mode: config.mode as ScheduleMode,
       priority: parseInt(config.priority),
       lowerBound: config.lowerBound ? parseFloat(config.lowerBound) : undefined,

@@ -14,7 +14,7 @@ describe('merger tests', () => {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -23,7 +23,7 @@ describe('merger tests', () => {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
     })
@@ -55,7 +55,7 @@ describe('merger tests', () => {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 1,
     })
@@ -64,7 +64,7 @@ describe('merger tests', () => {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 2,
+      numMtus: 2,
       mode: ScheduleMode.LOWEST,
       priority: 2,
     })
@@ -101,7 +101,7 @@ describe('merger tests', () => {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -110,7 +110,7 @@ describe('merger tests', () => {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 2,
+      numMtus: 2,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })

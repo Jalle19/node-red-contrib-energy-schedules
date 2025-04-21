@@ -14,7 +14,7 @@ describe('schedules are correctly created', () => {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -31,7 +31,7 @@ describe('schedules are correctly created', () => {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
     })
@@ -48,7 +48,7 @@ describe('schedules are correctly created', () => {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       lowerBound: 10.75,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
@@ -66,7 +66,7 @@ describe('schedules are correctly created', () => {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       upperBound: 7,
       mode: ScheduleMode.LOWEST,
       priority: 0,
@@ -84,7 +84,7 @@ describe('schedules are correctly created', () => {
       name: 'cheap',
       hoursFrom: 6,
       hoursTo: 12,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -101,7 +101,7 @@ describe('schedules are correctly created', () => {
       name: 'two-day-cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -126,7 +126,7 @@ describe('schedule item summary', () => {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 6,
+      numMtus: 6,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
