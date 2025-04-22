@@ -11,7 +11,7 @@ describe('boolean signaler works properly', () => {
   it('works properly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
@@ -31,7 +31,7 @@ describe('active schedule signaler works properly', () => {
   it('works properly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
@@ -40,7 +40,7 @@ describe('active schedule signaler works properly', () => {
       priority: 0,
     })
 
-    let schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(mtus, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,

@@ -10,7 +10,7 @@ describe('schedules are correctly created', () => {
   it('generates 4 lowest value items correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
@@ -27,7 +27,7 @@ describe('schedules are correctly created', () => {
   it('generates 4 highest value items correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
@@ -44,7 +44,7 @@ describe('schedules are correctly created', () => {
   it('applies lower bound correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
@@ -62,7 +62,7 @@ describe('schedules are correctly created', () => {
   it('applies upper bound correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
@@ -80,7 +80,7 @@ describe('schedules are correctly created', () => {
   it('handles hours from and to correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 6,
       hoursTo: 12,
@@ -122,7 +122,7 @@ describe('schedule item summary', () => {
   it('is calculated correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,

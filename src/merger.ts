@@ -11,7 +11,7 @@ export const mergeSchedules = (schedules: Schedule[], options: BaseScheduleOptio
   })
 
   // Start by copying the items from the first (highest priority) schedule
-  let finalSchedule: Schedule = {
+  const finalSchedule: Schedule = {
     name: options.name,
     priority: options.priority,
     items: [...schedules[0].items],

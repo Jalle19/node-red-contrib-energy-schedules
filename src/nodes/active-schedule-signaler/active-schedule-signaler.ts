@@ -1,10 +1,8 @@
 import { Node, NodeDef, NodeInitializer } from 'node-red'
 import { Schedule } from '../../schedule'
 import { activeScheduleSignaler } from '../../signaler'
-import { creatBooleanSignalerStatus } from '../helpers'
 
-interface ActiveScheduleSignalerNodeDef extends NodeDef {}
-
+type ActiveScheduleSignalerNodeDef = NodeDef
 type ActiveScheduleSignalerNode = Node
 
 const nodeInit: NodeInitializer = (RED): void => {

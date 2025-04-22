@@ -1,4 +1,4 @@
-import { NodeDef, NodeInitializer } from 'node-red'
+import { NodeDef, NodeInitializer, NodeMessageInFlow } from 'node-red'
 import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
 import { parseMtus } from '../../parser'
 import { handleScheduleMessage } from '../helpers'
@@ -12,6 +12,10 @@ interface CreateScheduleNodeDef extends NodeDef {
   priority: string
   lowerBound: string
   upperBound: string
+}
+
+interface CreateScheduleNodeInputMessage extends NodeMessageInFlow {
+  dynamicOptions?: Partial<ScheduleOptions>
 }
 
 const nodeInit: NodeInitializer = (RED): void => {
@@ -32,17 +36,16 @@ const nodeInit: NodeInitializer = (RED): void => {
 
     this.context().set('scheduleOptions', scheduleOptions)
 
-    this.on('input', (msg, send, done) => {
+    this.on('input', (msg: CreateScheduleNodeInputMessage, send, done) => {
       const mtus = parseMtus(msg.payload)
 
       // Handle dynamic options
       let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
-      const dynamicOptions: Partial<ScheduleOptions> | undefined = (msg as any)?.dynamicOptions
 
-      if (dynamicOptions) {
+      if (msg?.dynamicOptions) {
         currentScheduleOptions = {
           ...currentScheduleOptions,
-          ...dynamicOptions,
+          ...msg.dynamicOptions,
         }
 
         this.context().set('scheduleOptions', currentScheduleOptions)

@@ -10,7 +10,7 @@ describe('merger tests', () => {
   it('merges non-overlapping schedules correctly', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
@@ -19,7 +19,7 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    let schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(mtus, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
@@ -51,7 +51,7 @@ describe('merger tests', () => {
   it('merges overlapping schedules according to priority', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(mtus, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
@@ -60,7 +60,7 @@ describe('merger tests', () => {
       priority: 1,
     })
 
-    let schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(mtus, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
@@ -69,7 +69,7 @@ describe('merger tests', () => {
       priority: 2,
     })
 
-    let schedule3 = makeTakeAllSchedule(mtus, {
+    const schedule3 = makeTakeAllSchedule(mtus, {
       name: 'neutral',
       priority: 0,
     })
@@ -97,7 +97,7 @@ describe('merger tests', () => {
   it('merges overlapping schedules with equal priority', () => {
     const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(mtus, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
@@ -106,7 +106,7 @@ describe('merger tests', () => {
       priority: 0,
     })
 
-    let schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(mtus, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,

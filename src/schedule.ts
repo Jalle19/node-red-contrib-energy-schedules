@@ -77,7 +77,7 @@ export const getDaySlices = (mtus: MarketTimeUnits): MarketTimeUnits[] => {
   const days = new Set(mtus.map((mtu) => mtu.start.getDate()))
 
   // Create separate slices for each day
-  let slices: MarketTimeUnits[] = []
+  const slices: MarketTimeUnits[] = []
   for (const day of days) {
     slices.push(mtus.filter((mtu) => mtu.start.getDate() === day))
   }
