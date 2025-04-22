@@ -1,0 +1,500 @@
+[
+    {
+        "id": "96dd2126846597a7",
+        "type": "group",
+        "z": "59f1ebe6f0e5d7c8",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "395cac7e8cbe22cd",
+            "f162bf24c9d75b9f",
+            "2c67817af58d2f4c",
+            "5bb1eb0679817000",
+            "95b9af7b516c3cf8",
+            "7314c859d139d607",
+            "0d0991e9b0f1219b",
+            "34cb0304b7d29eeb",
+            "fd2098fce30524c5",
+            "20d05417f273ea88",
+            "55e21373fac292fe",
+            "fcc288fa60e16b5b",
+            "295ec2c899eaf0d4"
+        ],
+        "x": 34,
+        "y": 19,
+        "w": 972,
+        "h": 262
+    },
+    {
+        "id": "11136a3d841145e3",
+        "type": "subflow",
+        "name": "Get Nord Pool prices",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 80,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "0fe344c70faa8aac"
+                    },
+                    {
+                        "id": "c10c28af3eb8be21"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 780,
+                "y": 280,
+                "wires": [
+                    {
+                        "id": "5c2f4859951de015",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99",
+        "status": {
+            "x": 960,
+            "y": 160,
+            "wires": [
+                {
+                    "id": "736e4d7ed5638d42",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "0fe344c70faa8aac",
+        "type": "function",
+        "z": "11136a3d841145e3",
+        "name": "construct url",
+        "func": "msg.url = `https://dataportal-api.nordpoolgroup.com/api/DayAheadPrices?date=${msg.payload}&market=DayAhead&deliveryArea=FI&currency=EUR`\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 120,
+        "wires": [
+            [
+                "bcb9d73ec6583d4a"
+            ]
+        ]
+    },
+    {
+        "id": "bcb9d73ec6583d4a",
+        "type": "http request",
+        "z": "11136a3d841145e3",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [
+                "b7667f614ac29ee5"
+            ]
+        ]
+    },
+    {
+        "id": "b7667f614ac29ee5",
+        "type": "switch",
+        "z": "11136a3d841145e3",
+        "name": "status 200",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "85dd34efde1774d9"
+            ],
+            [
+                "e1107da244a20be5"
+            ]
+        ]
+    },
+    {
+        "id": "85dd34efde1774d9",
+        "type": "function",
+        "z": "11136a3d841145e3",
+        "name": "parse response",
+        "func": "const requestedDate = new Date(flow.get('date'))\n\nlet foo = false\n\nmsg.payload = msg.payload.multiAreaEntries.map(entry => {\n    /*const startTime = new Date(entry['deliveryStart'])\n\n    if (startTime.toDateString() !== requestedDate.toDateString()) {\n        return null\n    }*/\n\n    return {\n        start: entry['deliveryStart'],\n        end: entry['deliveryEnd'],\n        value: entry['entryPerArea']['FI'] / 10,\n    }\n})\n\nmsg.payload = msg.payload.filter(entry => entry !== null)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 200,
+        "wires": [
+            [
+                "5c2f4859951de015"
+            ]
+        ]
+    },
+    {
+        "id": "e1107da244a20be5",
+        "type": "change",
+        "z": "11136a3d841145e3",
+        "name": "empty array",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "[]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 470,
+        "y": 280,
+        "wires": [
+            [
+                "5c2f4859951de015"
+            ]
+        ]
+    },
+    {
+        "id": "736e4d7ed5638d42",
+        "type": "function",
+        "z": "11136a3d841145e3",
+        "name": "length",
+        "func": "msg.payload = msg.payload.length\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c10c28af3eb8be21",
+        "type": "change",
+        "z": "11136a3d841145e3",
+        "name": "store date in flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "date",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 230,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5c2f4859951de015",
+        "type": "junction",
+        "z": "11136a3d841145e3",
+        "x": 660,
+        "y": 240,
+        "wires": [
+            [
+                "736e4d7ed5638d42"
+            ]
+        ]
+    },
+    {
+        "id": "395cac7e8cbe22cd",
+        "type": "comment",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Fetch Nord Pool price data",
+        "info": "",
+        "x": 170,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "f162bf24c9d75b9f",
+        "type": "link out",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Power schedule tax-free link out",
+        "mode": "link",
+        "links": [
+            "4a3e1f6b0fd1aad7"
+        ],
+        "x": 965,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "2c67817af58d2f4c",
+        "type": "subflow:11136a3d841145e3",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Today's prices",
+        "x": 420,
+        "y": 180,
+        "wires": [
+            [
+                "7314c859d139d607"
+            ]
+        ]
+    },
+    {
+        "id": "5bb1eb0679817000",
+        "type": "function",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Construct dates",
+        "func": "const today = new Date()\nconst year = today.getFullYear()\nconst month = today.getMonth() + 1\nconst day = today.getDate()\n\nconst tomorrow = new Date()\ntomorrow.setDate(tomorrow.getDate() + 1)\nconst tomorrowYear = tomorrow.getFullYear()\nconst tomorrowMonth = tomorrow.getMonth() + 1\nconst tomorrowDay = tomorrow.getDate()\n\nconst yesterday = new Date()\nyesterday.setDate(yesterday.getDate() - 1)\nconst yesterdayYear = yesterday.getFullYear()\nconst yesterdayMonth = yesterday.getMonth() + 1\nconst yesterdayDay = yesterday.getDate()\n\nconst yesterdayDate = `${yesterdayYear}-${String(yesterdayMonth).padStart(2, '0')}-${String(yesterdayDay).padStart(2, '0')}`\nconst todayDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`\nconst tomorrowDate = `${tomorrowYear}-${String(tomorrowMonth).padStart(2, '0')}-${String(tomorrowDay).padStart(2, '0')}`\n\nconst msg1 = {...msg, payload: yesterdayDate}\nconst msg2 = {...msg, payload: todayDate}\nconst msg3 = {...msg, payload: tomorrowDate}\n\nreturn [msg1, msg2, msg3];",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "fd2098fce30524c5"
+            ],
+            [
+                "2c67817af58d2f4c"
+            ],
+            [
+                "34cb0304b7d29eeb"
+            ]
+        ]
+    },
+    {
+        "id": "95b9af7b516c3cf8",
+        "type": "inject",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Refresh",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 120,
+        "wires": [
+            [
+                "5bb1eb0679817000"
+            ]
+        ]
+    },
+    {
+        "id": "7314c859d139d607",
+        "type": "join",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "join",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 670,
+        "y": 180,
+        "wires": [
+            [
+                "0d0991e9b0f1219b"
+            ]
+        ]
+    },
+    {
+        "id": "0d0991e9b0f1219b",
+        "type": "function",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "process",
+        "func": "// Flatten responses into single list\nmsg.payload = msg.payload.flat()\n\n// Sort chronologically\nmsg.payload = msg.payload.toSorted((a, b) => {\n    const left = new Date(a.start).getTime()\n    const right = new Date(b.start).getTime()\n\n    return left - right\n})\n\n// Remove the last hour\nmsg.payload.pop()\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 180,
+        "wires": [
+            [
+                "f162bf24c9d75b9f",
+                "20d05417f273ea88",
+                "295ec2c899eaf0d4"
+            ]
+        ]
+    },
+    {
+        "id": "34cb0304b7d29eeb",
+        "type": "subflow:11136a3d841145e3",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Tomorrow's prices",
+        "x": 430,
+        "y": 240,
+        "wires": [
+            [
+                "7314c859d139d607"
+            ]
+        ]
+    },
+    {
+        "id": "fd2098fce30524c5",
+        "type": "subflow:11136a3d841145e3",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Yesterday's prices",
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "7314c859d139d607"
+            ]
+        ]
+    },
+    {
+        "id": "20d05417f273ea88",
+        "type": "function",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Add transfer and tax",
+        "func": "msg.payload = msg.payload.map(h => {\n    const start = new Date(h.start)\n    const hour = start.getHours()\n\n    let transfer = 7.94\n    if (hour >= 22 || hour < 7) {\n        transfer = 5.95\n    }\n\n    h.value = h.value * 1.255 + transfer\n    return h\n})\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 240,
+        "wires": [
+            [
+                "55e21373fac292fe"
+            ]
+        ]
+    },
+    {
+        "id": "55e21373fac292fe",
+        "type": "link out",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Power schedule link out",
+        "mode": "link",
+        "links": [
+            "3bd1b69660d415ca"
+        ],
+        "x": 965,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "fcc288fa60e16b5b",
+        "type": "comment",
+        "z": "59f1ebe6f0e5d7c8",
+        "g": "96dd2126846597a7",
+        "name": "Send all inclusive and all exclusive",
+        "info": "",
+        "x": 840,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "295ec2c899eaf0d4",
+        "type": "debug",
+        "z": "59f1ebe6f0e5d7c8",
+        "d": true,
+        "g": "96dd2126846597a7",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 120,
+        "wires": []
+    }
+]
