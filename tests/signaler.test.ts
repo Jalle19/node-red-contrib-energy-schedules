@@ -1,21 +1,21 @@
 import { describe, expect, it } from '@jest/globals'
-import { parsePrices } from '../src/parser'
+import { parseMtus } from '../src/parser'
 import { makeSchedule, ScheduleMode } from '../src/schedule'
 import fs from 'node:fs'
 import { activeScheduleSignaler, booleanSignaler } from '../src/signaler'
 import { mergeSchedules } from '../src/merger'
 
-const PRICES_24HOURS = fs.readFileSync('tests/resources/prices.24hours.json').toString()
+const MTUS_24HOURS = fs.readFileSync('tests/resources/mtus.24hours.json').toString()
 
 describe('boolean signaler works properly', () => {
   it('works properly', () => {
-    const prices = parsePrices(PRICES_24HOURS)
+    const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule = makeSchedule(prices, {
+    const schedule = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -29,22 +29,22 @@ describe('boolean signaler works properly', () => {
 
 describe('active schedule signaler works properly', () => {
   it('works properly', () => {
-    const prices = parsePrices(PRICES_24HOURS)
+    const mtus = parseMtus(MTUS_24HOURS)
 
-    let schedule1 = makeSchedule(prices, {
+    const schedule1 = makeSchedule(mtus, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
 
-    let schedule2 = makeSchedule(prices, {
+    const schedule2 = makeSchedule(mtus, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numHours: 4,
+      numMtus: 4,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
     })

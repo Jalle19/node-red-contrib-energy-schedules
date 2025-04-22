@@ -1,17 +1,21 @@
-import { NodeDef, NodeInitializer } from 'node-red'
+import { NodeDef, NodeInitializer, NodeMessageInFlow } from 'node-red'
 import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
-import { parsePrices } from '../../parser'
+import { parseMtus } from '../../parser'
 import { handleScheduleMessage } from '../helpers'
 import { CreateScheduleNode } from '../types'
 
 interface CreateScheduleNodeDef extends NodeDef {
   hoursFrom: string
   hoursTo: string
-  numHours: string
+  numMtus: string
   mode: string
   priority: string
   lowerBound: string
   upperBound: string
+}
+
+interface CreateScheduleNodeInputMessage extends NodeMessageInFlow {
+  dynamicOptions?: Partial<ScheduleOptions>
 }
 
 const nodeInit: NodeInitializer = (RED): void => {
@@ -23,7 +27,7 @@ const nodeInit: NodeInitializer = (RED): void => {
       name: config.name,
       hoursFrom: parseInt(config.hoursFrom),
       hoursTo: parseInt(config.hoursTo),
-      numHours: parseInt(config.numHours),
+      numMtus: parseInt(config.numMtus),
       mode: config.mode as ScheduleMode,
       priority: parseInt(config.priority),
       lowerBound: config.lowerBound ? parseFloat(config.lowerBound) : undefined,
@@ -32,23 +36,22 @@ const nodeInit: NodeInitializer = (RED): void => {
 
     this.context().set('scheduleOptions', scheduleOptions)
 
-    this.on('input', (msg, send, done) => {
-      const prices = parsePrices(msg.payload)
+    this.on('input', (msg: CreateScheduleNodeInputMessage, send, done) => {
+      const mtus = parseMtus(msg.payload)
 
       // Handle dynamic options
       let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
-      const dynamicOptions: Partial<ScheduleOptions> | undefined = (msg as any)?.dynamicOptions
 
-      if (dynamicOptions) {
+      if (msg?.dynamicOptions) {
         currentScheduleOptions = {
           ...currentScheduleOptions,
-          ...dynamicOptions,
+          ...msg.dynamicOptions,
         }
 
         this.context().set('scheduleOptions', currentScheduleOptions)
       }
 
-      const schedule = makeSchedule(prices, currentScheduleOptions)
+      const schedule = makeSchedule(mtus, currentScheduleOptions)
 
       handleScheduleMessage(this, schedule, msg, send, done)
     })

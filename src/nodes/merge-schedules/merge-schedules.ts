@@ -1,7 +1,7 @@
 import { NodeDef, NodeInitializer } from 'node-red'
-import { BaseScheduleOptions, getScheduleItemSummary, Schedule } from '../../schedule'
+import { BaseScheduleOptions, Schedule } from '../../schedule'
 import { mergeSchedules } from '../../merger'
-import { createScheduleNodeStatus, handleScheduleMessage } from '../helpers'
+import { handleScheduleMessage } from '../helpers'
 import { MergeSchedulesNode } from '../types'
 
 interface MergeSchedulesNodeDef extends NodeDef {

@@ -3,8 +3,7 @@ import { Schedule } from '../../schedule'
 import { booleanSignaler } from '../../signaler'
 import { creatBooleanSignalerStatus } from '../helpers'
 
-interface BooleanSignalerNodeDef extends NodeDef {}
-
+type BooleanSignalerNodeDef = NodeDef
 type BooleanSignalerNode = Node
 
 const nodeInit: NodeInitializer = (RED): void => {

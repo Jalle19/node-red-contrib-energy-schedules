@@ -1,16 +1,16 @@
 import { describe, expect, test } from '@jest/globals'
-import { parsePrices } from '../src/parser'
+import { parseMtus } from '../src/parser'
 import * as fs from 'node:fs'
 
-const PRICES_24HOURS = fs.readFileSync('tests/resources/prices.24hours.json').toString()
+const MTUS_24HOURS = fs.readFileSync('tests/resources/mtus.24hours.json').toString()
 
-describe('parses price data correctly', () => {
+describe('parses market time units correctly', () => {
   test('parses timestamps correctly', () => {
-    const prices = parsePrices(PRICES_24HOURS)
+    const mtus = parseMtus(MTUS_24HOURS)
 
-    expect(prices.length).toEqual(24)
-    const firstHour = prices[0]
-    const secondHour = prices[1]
+    expect(mtus.length).toEqual(24)
+    const firstHour = mtus[0]
+    const secondHour = mtus[1]
 
     // Check that timezone is taken into account
     expect(firstHour.start.getHours()).toEqual(0)
@@ -38,9 +38,9 @@ describe('parses price data correctly', () => {
       },
     ]
 
-    const prices = parsePrices(rawData)
-    const firstHour = prices[0]
-    const secondHour = prices[1]
+    const mtus = parseMtus(rawData)
+    const firstHour = mtus[0]
+    const secondHour = mtus[1]
 
     expect(firstHour.start.getHours()).toEqual(9)
     expect(firstHour.value).toEqual(5.52)
@@ -50,7 +50,7 @@ describe('parses price data correctly', () => {
 
   test('throws on unknown input', () => {
     expect(() => {
-      parsePrices(23)
+      parseMtus(23)
     }).toThrow(TypeError)
   })
 })

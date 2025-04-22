@@ -1,4 +1,4 @@
-import { Price, Prices } from './prices'
+import { MarketTimeUnit, MarketTimeUnits } from './mtu'
 
 export enum ScheduleMode {
   LOWEST = 'LOWEST',
@@ -13,7 +13,7 @@ export interface BaseScheduleOptions {
 export interface ScheduleOptions extends BaseScheduleOptions {
   hoursFrom: number
   hoursTo: number
-  numHours: number
+  numMtus: number
   mode: ScheduleMode
   lowerBound?: number
   upperBound?: number
@@ -37,62 +37,62 @@ export type ScheduleItemSummary = {
   upcoming: number
 }
 
-export const makeSchedule = (prices: Prices, options: ScheduleOptions): Schedule => {
-  let selectedPrices: Prices = []
+export const makeSchedule = (mtus: MarketTimeUnits, options: ScheduleOptions): Schedule => {
+  let selectedMtus: MarketTimeUnits = []
 
-  const daySlices = getDaySlices(prices)
+  const daySlices = getDaySlices(mtus)
 
-  // Calculate slices separately for each day in the price data
+  // Calculate slices separately for each day in the MTU data
   for (const daySlice of daySlices) {
-    // Narrow down the prices to those within hoursFrom and hoursTo
+    // Narrow down the MTUs to those within hoursFrom and hoursTo
     let hourSlice = getHourSlice(daySlice, options.hoursFrom, options.hoursTo)
 
     // Further narrow down the slice by excluding out of bounds values
     if (options.mode === ScheduleMode.LOWEST) {
-      hourSlice = getLowerSlice(hourSlice, options.numHours, options.upperBound)
+      hourSlice = getLowerSlice(hourSlice, options.numMtus, options.upperBound)
     } else {
-      hourSlice = getUpperSlice(hourSlice, options.numHours, options.lowerBound)
+      hourSlice = getUpperSlice(hourSlice, options.numMtus, options.lowerBound)
     }
 
-    selectedPrices = [...selectedPrices, ...hourSlice]
+    selectedMtus = [...selectedMtus, ...hourSlice]
   }
 
   return {
     name: options.name,
     priority: options.priority,
-    items: sortScheduleItems(pricesToScheduleItems(selectedPrices, options)),
+    items: sortScheduleItems(mtusToScheduleItems(selectedMtus, options)),
   }
 }
 
-export const makeTakeAllSchedule = (prices: Prices, options: BaseScheduleOptions): Schedule => {
+export const makeTakeAllSchedule = (mtus: MarketTimeUnits, options: BaseScheduleOptions): Schedule => {
   return {
     name: options.name,
     priority: options.priority,
-    items: sortScheduleItems(pricesToScheduleItems(prices, options)),
+    items: sortScheduleItems(mtusToScheduleItems(mtus, options)),
   }
 }
 
-export const getDaySlices = (prices: Prices): Prices[] => {
+export const getDaySlices = (mtus: MarketTimeUnits): MarketTimeUnits[] => {
   // Determine which days are available
-  const days = new Set(prices.map((price) => price.start.getDate()))
+  const days = new Set(mtus.map((mtu) => mtu.start.getDate()))
 
   // Create separate slices for each day
-  let slices: Prices[] = []
+  const slices: MarketTimeUnits[] = []
   for (const day of days) {
-    slices.push(prices.filter((price) => price.start.getDate() === day))
+    slices.push(mtus.filter((mtu) => mtu.start.getDate() === day))
   }
 
   return slices
 }
 
-const getHourSlice = (prices: Prices, hoursFrom: number, hoursTo: number): Prices => {
-  return prices.filter((price) => {
-    return price.start.getHours() >= hoursFrom && price.end.getHours() <= hoursTo && price.start.getHours() <= hoursTo
+const getHourSlice = (mtus: MarketTimeUnits, hoursFrom: number, hoursTo: number): MarketTimeUnits => {
+  return mtus.filter((mtu) => {
+    return mtu.start.getHours() >= hoursFrom && mtu.end.getHours() <= hoursTo && mtu.start.getHours() <= hoursTo
   })
 }
 
-const getLowerSlice = (prices: Prices, numHours: number, upperBound?: number): Prices => {
-  prices.sort((a: Price, b: Price) => {
+const getLowerSlice = (mtus: MarketTimeUnits, numMtus: number, upperBound?: number): MarketTimeUnits => {
+  mtus.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
     if (a.value === b.value) {
       return 0
     }
@@ -100,17 +100,17 @@ const getLowerSlice = (prices: Prices, numHours: number, upperBound?: number): P
     return a.value < b.value ? -1 : 1
   })
 
-  prices = prices.slice(0, numHours)
+  mtus = mtus.slice(0, numMtus)
 
   if (upperBound) {
-    prices = prices.filter((p) => p.value < upperBound)
+    mtus = mtus.filter((p) => p.value < upperBound)
   }
 
-  return prices
+  return mtus
 }
 
-const getUpperSlice = (prices: Prices, numHours: number, lowerBound?: number): Prices => {
-  prices.sort((a: Price, b: Price) => {
+const getUpperSlice = (mtus: MarketTimeUnits, numMtus: number, lowerBound?: number): MarketTimeUnits => {
+  mtus.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
     if (a.value === b.value) {
       return 0
     }
@@ -118,13 +118,13 @@ const getUpperSlice = (prices: Prices, numHours: number, lowerBound?: number): P
     return a.value > b.value ? -1 : 1
   })
 
-  prices = prices.slice(0, numHours)
+  mtus = mtus.slice(0, numMtus)
 
   if (lowerBound) {
-    prices = prices.filter((p) => p.value > lowerBound)
+    mtus = mtus.filter((p) => p.value > lowerBound)
   }
 
-  return prices
+  return mtus
 }
 
 export const sortScheduleItems = (items: ScheduleItem[]): ScheduleItem[] => {
@@ -139,13 +139,13 @@ export const sortScheduleItems = (items: ScheduleItem[]): ScheduleItem[] => {
   return items
 }
 
-const pricesToScheduleItems = (prices: Prices, scheduleOptions: BaseScheduleOptions): ScheduleItem[] => {
-  return prices.map((price) => {
+const mtusToScheduleItems = (mtus: MarketTimeUnits, scheduleOptions: BaseScheduleOptions): ScheduleItem[] => {
+  return mtus.map((mtu) => {
     return {
-      start: price.start,
-      end: price.end,
+      start: mtu.start,
+      end: mtu.end,
       name: scheduleOptions.name,
-      value: price.value,
+      value: mtu.value,
     }
   })
 }
