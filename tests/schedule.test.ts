@@ -57,6 +57,21 @@ describe('schedules are correctly created', () => {
     expect(schedule.name).toEqual('expensive')
     expect(schedule.items.length).toEqual(2)
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([7, 8])
+
+    // Try with lower bound 0 too
+    const schedule2 = makeSchedule(mtus, {
+      name: 'expensive',
+      hoursFrom: 0,
+      hoursTo: 24,
+      numMtus: 4,
+      lowerBound: 0,
+      mode: ScheduleMode.HIGHEST,
+      priority: 0,
+    })
+
+    expect(schedule2.name).toEqual('expensive')
+    expect(schedule2.items.length).toEqual(4)
+    expect(schedule2.items.map((item) => item.start.getHours())).toEqual([0, 7, 8, 9])
   })
 
   it('applies upper bound correctly', () => {
@@ -75,6 +90,21 @@ describe('schedules are correctly created', () => {
     expect(schedule.name).toEqual('cheap')
     expect(schedule.items.length).toEqual(2)
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([22, 23])
+
+    // Try with upper bound 0 too
+    const schedule2 = makeSchedule(mtus, {
+      name: 'cheap',
+      hoursFrom: 0,
+      hoursTo: 24,
+      numMtus: 4,
+      upperBound: 0,
+      mode: ScheduleMode.LOWEST,
+      priority: 0,
+    })
+
+    expect(schedule2.name).toEqual('cheap')
+    expect(schedule2.items.length).toEqual(4)
+    expect(schedule2.items.map((item) => item.start.getHours())).toEqual([4, 5, 22, 23])
   })
 
   it('handles hours from and to correctly', () => {
