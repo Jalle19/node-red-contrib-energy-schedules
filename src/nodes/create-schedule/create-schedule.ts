@@ -39,8 +39,8 @@ const nodeInit: NodeInitializer = (RED): void => {
     this.on('input', (msg: CreateScheduleNodeInputMessage, send, done) => {
       let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
 
-      // Update schedule options if a configuration message is received
       if (msg?.dynamicOptions) {
+        // Update schedule options if a configuration message is received
         currentScheduleOptions = {
           ...currentScheduleOptions,
           ...msg.dynamicOptions,
@@ -48,12 +48,13 @@ const nodeInit: NodeInitializer = (RED): void => {
 
         this.context().set('scheduleOptions', currentScheduleOptions)
         done()
+      } else {
+        // Normal message, create schedule and send output
+        const mtus = parseMtus(msg.payload)
+        const schedule = makeSchedule(mtus, currentScheduleOptions)
+
+        handleScheduleMessage(this, schedule, msg, send, done)
       }
-
-      const mtus = parseMtus(msg.payload)
-      const schedule = makeSchedule(mtus, currentScheduleOptions)
-
-      handleScheduleMessage(this, schedule, msg, send, done)
     })
   }
 
