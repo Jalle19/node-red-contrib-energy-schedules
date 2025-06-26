@@ -15,7 +15,7 @@ const nodeInit: NodeInitializer = (RED): void => {
     RED.nodes.createNode(this, config)
 
     const scheduleOptions: MergeSchedulesOptions = {
-      name: config.name,
+      name: config.scheduleName,
       priority: parseInt(config.priority),
       renameItems: config.renameItems,
     }
