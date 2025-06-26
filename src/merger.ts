@@ -1,4 +1,4 @@
-import { BaseScheduleOptions, MergeSchedulesOptions, Schedule, sortScheduleItems } from './schedule'
+import { MergeSchedulesOptions, Schedule, sortScheduleItems } from './schedule'
 
 export const mergeSchedules = (schedules: Schedule[], options: MergeSchedulesOptions): Schedule => {
   // Sort schedules by priority, highest first

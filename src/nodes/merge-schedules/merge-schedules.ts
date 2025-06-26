@@ -1,5 +1,5 @@
 import { NodeDef, NodeInitializer } from 'node-red'
-import { BaseScheduleOptions, MergeSchedulesOptions, Schedule } from '../../schedule'
+import { MergeSchedulesOptions, Schedule } from '../../schedule'
 import { mergeSchedules } from '../../merger'
 import { handleScheduleMessage } from '../helpers'
 import { MergeSchedulesNode } from '../types'
