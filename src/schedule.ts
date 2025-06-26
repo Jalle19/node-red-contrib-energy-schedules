@@ -10,6 +10,10 @@ export interface BaseScheduleOptions {
   priority: number
 }
 
+export interface MergeSchedulesOptions extends BaseScheduleOptions {
+  renameItems: boolean
+}
+
 export interface ScheduleOptions extends BaseScheduleOptions {
   hoursFrom: number
   hoursTo: number

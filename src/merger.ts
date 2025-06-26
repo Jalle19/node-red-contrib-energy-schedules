@@ -1,6 +1,6 @@
-import { BaseScheduleOptions, Schedule, sortScheduleItems } from './schedule'
+import { BaseScheduleOptions, MergeSchedulesOptions, Schedule, sortScheduleItems } from './schedule'
 
-export const mergeSchedules = (schedules: Schedule[], options: BaseScheduleOptions): Schedule => {
+export const mergeSchedules = (schedules: Schedule[], options: MergeSchedulesOptions): Schedule => {
   // Sort schedules by priority, highest first
   schedules.sort((a, b) => {
     if (a.priority === b.priority) {
@@ -31,6 +31,15 @@ export const mergeSchedules = (schedules: Schedule[], options: BaseScheduleOptio
         finalSchedule.items.push(item)
       }
     }
+  }
+
+  // Optionally rename individual schedule items
+  if (options.renameItems) {
+    finalSchedule.items = finalSchedule.items.map((item) => {
+      item.name = options.name
+
+      return item
+    })
   }
 
   finalSchedule.items = sortScheduleItems(finalSchedule.items)
