@@ -1,5 +1,8 @@
 # node-red-contrib-energy-schedules
 
+[![Run linters](https://github.com/Jalle19/node-red-contrib-energy-schedules/actions/workflows/lint.yml/badge.svg)](https://github.com/Jalle19/node-red-contrib-energy-schedules/actions/workflows/lint.yml)
+[![Run tests](https://github.com/Jalle19/node-red-contrib-energy-schedules/actions/workflows/test.yml/badge.svg)](https://github.com/Jalle19/node-red-contrib-energy-schedules/actions/workflows/test.yml)
+
 > This project is still work in progress!
 
 A very advanced and flexible energy usage scheduler for Node-RED. It allows you to divide a day into different schedules 
