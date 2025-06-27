@@ -25,5 +25,7 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
+        env:
+          TZ: Europe/Helsinki
       - name: Build
         run: npm run build
