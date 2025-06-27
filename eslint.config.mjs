@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   {
     ignores: [
-      "./src/**/*.js",
+      "**/*.js",
       "eslint.config.mjs",
       "jest.config.js",
     ]

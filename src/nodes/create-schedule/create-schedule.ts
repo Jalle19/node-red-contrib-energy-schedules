@@ -1,4 +1,4 @@
-import { NodeDef, NodeInitializer, NodeMessageInFlow } from 'node-red'
+import { NodeDef, NodeInitializer } from 'node-red'
 import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
 import { parseMtus } from '../../parser'
 import { handleScheduleMessage } from '../helpers'
@@ -14,9 +14,7 @@ interface CreateScheduleNodeDef extends NodeDef {
   upperBound: string
 }
 
-interface CreateScheduleNodeInputMessage extends NodeMessageInFlow {
-  dynamicOptions?: Partial<ScheduleOptions>
-}
+const TOPIC_DYNAMIC_OPTIONS = 'dynamicOptions'
 
 const nodeInit: NodeInitializer = (RED): void => {
   function CreateScheduleNodeConstructor(this: CreateScheduleNode, config: CreateScheduleNodeDef): void {
@@ -36,24 +34,27 @@ const nodeInit: NodeInitializer = (RED): void => {
 
     this.context().set('scheduleOptions', scheduleOptions)
 
-    this.on('input', (msg: CreateScheduleNodeInputMessage, send, done) => {
+    this.on('input', (msg, send, done) => {
       let currentScheduleOptions = this.context().get('scheduleOptions') as ScheduleOptions
 
-      // Update schedule options if a configuration message is received
-      if (msg?.dynamicOptions) {
+      if (msg.topic === TOPIC_DYNAMIC_OPTIONS) {
+        const dynamicOptions = msg.payload as Partial<ScheduleOptions>
+
+        // Update schedule options if a configuration message is received
         currentScheduleOptions = {
           ...currentScheduleOptions,
-          ...msg.dynamicOptions,
+          ...dynamicOptions,
         }
 
         this.context().set('scheduleOptions', currentScheduleOptions)
         done()
+      } else {
+        // Normal message, create schedule and send output
+        const mtus = parseMtus(msg.payload)
+        const schedule = makeSchedule(mtus, currentScheduleOptions)
+
+        handleScheduleMessage(this, schedule, msg, send, done)
       }
-
-      const mtus = parseMtus(msg.payload)
-      const schedule = makeSchedule(mtus, currentScheduleOptions)
-
-      handleScheduleMessage(this, schedule, msg, send, done)
     })
   }
 

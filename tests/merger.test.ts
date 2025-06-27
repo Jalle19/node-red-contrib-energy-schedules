@@ -31,6 +31,7 @@ describe('merger tests', () => {
     const mergedSchedule = mergeSchedules([schedule1, schedule2], {
       name: 'merged',
       priority: 1,
+      renameItems: false,
     })
 
     // Make sure the original schedules have not been modified
@@ -77,6 +78,7 @@ describe('merger tests', () => {
     const mergedSchedule = mergeSchedules([schedule1, schedule2, schedule3], {
       name: 'merged',
       priority: 0,
+      renameItems: false,
     })
 
     expect(mergedSchedule.name).toEqual('merged')
@@ -118,6 +120,7 @@ describe('merger tests', () => {
     const mergedSchedule = mergeSchedules([schedule1, schedule2], {
       name: 'merged',
       priority: 0,
+      renameItems: false,
     })
 
     expect(mergedSchedule.name).toEqual('merged')
@@ -128,5 +131,41 @@ describe('merger tests', () => {
     const itemNames = mergedSchedule.items.map((item) => item.name)
 
     expect(itemNames).toEqual(['cheap1', 'cheap1', 'cheap1', 'cheap1'])
+  })
+
+  it('renames items correctly', () => {
+    const mtus = parseMtus(MTUS_24HOURS)
+
+    const schedule1 = makeSchedule(mtus, {
+      name: 'cheap1',
+      hoursFrom: 0,
+      hoursTo: 24,
+      numMtus: 4,
+      mode: ScheduleMode.LOWEST,
+      priority: 0,
+    })
+
+    const schedule2 = makeSchedule(mtus, {
+      name: 'cheap2',
+      hoursFrom: 0,
+      hoursTo: 24,
+      numMtus: 2,
+      mode: ScheduleMode.LOWEST,
+      priority: 0,
+    })
+
+    const mergedSchedule = mergeSchedules([schedule1, schedule2], {
+      name: 'new',
+      priority: 0,
+      renameItems: true,
+    })
+
+    expect(mergedSchedule.name).toEqual('new')
+    expect(mergedSchedule.priority).toEqual(0)
+    expect(mergedSchedule.items.length).toEqual(4)
+
+    const itemNames = mergedSchedule.items.map((item) => item.name)
+
+    expect(itemNames).toEqual(['new', 'new', 'new', 'new'])
   })
 })

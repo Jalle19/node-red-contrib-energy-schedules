@@ -1,5 +1,5 @@
 import { NodeDef, NodeInitializer } from 'node-red'
-import { BaseScheduleOptions, makeTakeAllSchedule } from '../../schedule'
+import { makeTakeAllSchedule, TakeAllScheduleOptions } from '../../schedule'
 import { handleScheduleMessage } from '../helpers'
 import { TakeAllScheduleNode } from '../types'
 import { parseMtus } from '../../parser'
@@ -12,7 +12,7 @@ const nodeInit: NodeInitializer = (RED): void => {
   function TakeAllScheduleNodeConstructor(this: TakeAllScheduleNode, config: TakeAllScheduleNodeDef): void {
     RED.nodes.createNode(this, config)
 
-    const scheduleOptions: BaseScheduleOptions = {
+    const scheduleOptions: TakeAllScheduleOptions = {
       name: config.name,
       priority: parseInt(config.priority),
     }

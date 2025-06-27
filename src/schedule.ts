@@ -10,6 +10,12 @@ export interface BaseScheduleOptions {
   priority: number
 }
 
+export interface MergeSchedulesOptions extends BaseScheduleOptions {
+  renameItems: boolean
+}
+
+export type TakeAllScheduleOptions = BaseScheduleOptions
+
 export interface ScheduleOptions extends BaseScheduleOptions {
   hoursFrom: number
   hoursTo: number
@@ -64,7 +70,7 @@ export const makeSchedule = (mtus: MarketTimeUnits, options: ScheduleOptions): S
   }
 }
 
-export const makeTakeAllSchedule = (mtus: MarketTimeUnits, options: BaseScheduleOptions): Schedule => {
+export const makeTakeAllSchedule = (mtus: MarketTimeUnits, options: TakeAllScheduleOptions): Schedule => {
   return {
     name: options.name,
     priority: options.priority,
