@@ -1,16 +1,16 @@
 import { describe, expect, test } from '@jest/globals'
-import { parseMtus } from '../src/parser'
+import { parseTimePeriods } from '../src/parser'
 import * as fs from 'node:fs'
 
-const MTUS_24HOURS = fs.readFileSync('tests/resources/mtus.24hours.json').toString()
+const TIME_PERIODS_24HOURS = fs.readFileSync('tests/resources/timePeriods.24hours.json').toString()
 
 describe('parses market time units correctly', () => {
   test('parses timestamps correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    expect(mtus.length).toEqual(24)
-    const firstHour = mtus[0]
-    const secondHour = mtus[1]
+    expect(timePeriods.length).toEqual(24)
+    const firstHour = timePeriods[0]
+    const secondHour = timePeriods[1]
 
     // Check that timezone is taken into account
     expect(firstHour.start.getHours()).toEqual(0)
@@ -38,9 +38,9 @@ describe('parses market time units correctly', () => {
       },
     ]
 
-    const mtus = parseMtus(rawData)
-    const firstHour = mtus[0]
-    const secondHour = mtus[1]
+    const timePeriods = parseTimePeriods(rawData)
+    const firstHour = timePeriods[0]
+    const secondHour = timePeriods[1]
 
     expect(firstHour.start.getHours()).toEqual(9)
     expect(firstHour.value).toEqual(5.52)
@@ -50,7 +50,7 @@ describe('parses market time units correctly', () => {
 
   test('throws on unknown input', () => {
     expect(() => {
-      parseMtus(23)
+      parseTimePeriods(23)
     }).toThrow(TypeError)
   })
 })

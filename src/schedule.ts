@@ -1,4 +1,4 @@
-import { MarketTimeUnit, MarketTimeUnits } from './mtu'
+import { MarketTimeUnit, TimePeriods } from './timePeriod'
 
 export enum ScheduleMode {
   LOWEST = 'LOWEST',
@@ -19,7 +19,7 @@ export type TakeAllScheduleOptions = BaseScheduleOptions
 export interface ScheduleOptions extends BaseScheduleOptions {
   hoursFrom: number
   hoursTo: number
-  numMtus: number
+  numTimePeriods: number
   mode: ScheduleMode
   lowerBound?: number
   upperBound?: number
@@ -43,62 +43,64 @@ export type ScheduleItemSummary = {
   upcoming: number
 }
 
-export const makeSchedule = (mtus: MarketTimeUnits, options: ScheduleOptions): Schedule => {
-  let selectedMtus: MarketTimeUnits = []
+export const makeSchedule = (timePeriods: TimePeriods, options: ScheduleOptions): Schedule => {
+  let selectedTimePeriods: TimePeriods = []
 
-  const daySlices = getDaySlices(mtus)
+  const daySlices = getDaySlices(timePeriods)
 
-  // Calculate slices separately for each day in the MTU data
+  // Calculate slices separately for each day in the time period data
   for (const daySlice of daySlices) {
-    // Narrow down the MTUs to those within hoursFrom and hoursTo
+    // Narrow down the time periods to those within hoursFrom and hoursTo
     let hourSlice = getHourSlice(daySlice, options.hoursFrom, options.hoursTo)
 
     // Further narrow down the slice by excluding out of bounds values
     if (options.mode === ScheduleMode.LOWEST) {
-      hourSlice = getLowerSlice(hourSlice, options.numMtus, options.upperBound)
+      hourSlice = getLowerSlice(hourSlice, options.numTimePeriods, options.upperBound)
     } else {
-      hourSlice = getUpperSlice(hourSlice, options.numMtus, options.lowerBound)
+      hourSlice = getUpperSlice(hourSlice, options.numTimePeriods, options.lowerBound)
     }
 
-    selectedMtus = [...selectedMtus, ...hourSlice]
+    selectedTimePeriods = [...selectedTimePeriods, ...hourSlice]
   }
 
   return {
     name: options.name,
     priority: options.priority,
-    items: sortScheduleItems(mtusToScheduleItems(selectedMtus, options)),
+    items: sortScheduleItems(timePeriodsToScheduleItems(selectedTimePeriods, options)),
   }
 }
 
-export const makeTakeAllSchedule = (mtus: MarketTimeUnits, options: TakeAllScheduleOptions): Schedule => {
+export const makeTakeAllSchedule = (timePeriods: TimePeriods, options: TakeAllScheduleOptions): Schedule => {
   return {
     name: options.name,
     priority: options.priority,
-    items: sortScheduleItems(mtusToScheduleItems(mtus, options)),
+    items: sortScheduleItems(timePeriodsToScheduleItems(timePeriods, options)),
   }
 }
 
-export const getDaySlices = (mtus: MarketTimeUnits): MarketTimeUnits[] => {
+export const getDaySlices = (timePeriods: TimePeriods): TimePeriods[] => {
   // Determine which days are available
-  const days = new Set(mtus.map((mtu) => mtu.start.getDate()))
+  const days = new Set(timePeriods.map((period) => period.start.getDate()))
 
   // Create separate slices for each day
-  const slices: MarketTimeUnits[] = []
+  const slices: TimePeriods[] = []
   for (const day of days) {
-    slices.push(mtus.filter((mtu) => mtu.start.getDate() === day))
+    slices.push(timePeriods.filter((period) => period.start.getDate() === day))
   }
 
   return slices
 }
 
-const getHourSlice = (mtus: MarketTimeUnits, hoursFrom: number, hoursTo: number): MarketTimeUnits => {
-  return mtus.filter((mtu) => {
-    return mtu.start.getHours() >= hoursFrom && mtu.end.getHours() <= hoursTo && mtu.start.getHours() <= hoursTo
+const getHourSlice = (timePeriods: TimePeriods, hoursFrom: number, hoursTo: number): TimePeriods => {
+  return timePeriods.filter((period) => {
+    return (
+      period.start.getHours() >= hoursFrom && period.end.getHours() <= hoursTo && period.start.getHours() <= hoursTo
+    )
   })
 }
 
-const getLowerSlice = (mtus: MarketTimeUnits, numMtus: number, upperBound?: number): MarketTimeUnits => {
-  mtus.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
+const getLowerSlice = (timePeriods: TimePeriods, numTimePeriods: number, upperBound?: number): TimePeriods => {
+  timePeriods.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
     if (a.value === b.value) {
       return 0
     }
@@ -106,17 +108,17 @@ const getLowerSlice = (mtus: MarketTimeUnits, numMtus: number, upperBound?: numb
     return a.value < b.value ? -1 : 1
   })
 
-  mtus = mtus.slice(0, numMtus)
+  timePeriods = timePeriods.slice(0, numTimePeriods)
 
   if (upperBound) {
-    mtus = mtus.filter((p) => p.value < upperBound)
+    timePeriods = timePeriods.filter((p) => p.value < upperBound)
   }
 
-  return mtus
+  return timePeriods
 }
 
-const getUpperSlice = (mtus: MarketTimeUnits, numMtus: number, lowerBound?: number): MarketTimeUnits => {
-  mtus.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
+const getUpperSlice = (timePeriods: TimePeriods, numTimePeriods: number, lowerBound?: number): TimePeriods => {
+  timePeriods.sort((a: MarketTimeUnit, b: MarketTimeUnit) => {
     if (a.value === b.value) {
       return 0
     }
@@ -124,13 +126,13 @@ const getUpperSlice = (mtus: MarketTimeUnits, numMtus: number, lowerBound?: numb
     return a.value > b.value ? -1 : 1
   })
 
-  mtus = mtus.slice(0, numMtus)
+  timePeriods = timePeriods.slice(0, numTimePeriods)
 
   if (lowerBound) {
-    mtus = mtus.filter((p) => p.value > lowerBound)
+    timePeriods = timePeriods.filter((p) => p.value > lowerBound)
   }
 
-  return mtus
+  return timePeriods
 }
 
 export const sortScheduleItems = (items: ScheduleItem[]): ScheduleItem[] => {
@@ -145,13 +147,13 @@ export const sortScheduleItems = (items: ScheduleItem[]): ScheduleItem[] => {
   return items
 }
 
-const mtusToScheduleItems = (mtus: MarketTimeUnits, scheduleOptions: BaseScheduleOptions): ScheduleItem[] => {
-  return mtus.map((mtu) => {
+const timePeriodsToScheduleItems = (timePeriods: TimePeriods, scheduleOptions: BaseScheduleOptions): ScheduleItem[] => {
+  return timePeriods.map((period) => {
     return {
-      start: mtu.start,
-      end: mtu.end,
+      start: period.start,
+      end: period.end,
       name: scheduleOptions.name,
-      value: mtu.value,
+      value: period.value,
     }
   })
 }

@@ -2,7 +2,7 @@ import { NodeDef, NodeInitializer } from 'node-red'
 import { makeTakeAllSchedule, TakeAllScheduleOptions } from '../../schedule'
 import { handleScheduleMessage } from '../helpers'
 import { TakeAllScheduleNode } from '../types'
-import { parseMtus } from '../../parser'
+import { parseTimePeriods } from '../../parser'
 
 interface TakeAllScheduleNodeDef extends NodeDef {
   priority: string
@@ -20,9 +20,9 @@ const nodeInit: NodeInitializer = (RED): void => {
     this.context().set('scheduleOptions', scheduleOptions)
 
     this.on('input', (msg, send, done) => {
-      const mtus = parseMtus(msg.payload)
+      const timePeriods = parseTimePeriods(msg.payload)
 
-      const schedule = makeTakeAllSchedule(mtus, scheduleOptions)
+      const schedule = makeTakeAllSchedule(timePeriods, scheduleOptions)
 
       handleScheduleMessage(this, schedule, msg, send, done)
     })

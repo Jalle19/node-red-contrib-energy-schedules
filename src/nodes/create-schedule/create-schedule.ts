@@ -1,13 +1,13 @@
 import { NodeDef, NodeInitializer } from 'node-red'
 import { makeSchedule, ScheduleMode, ScheduleOptions } from '../../schedule'
-import { parseMtus } from '../../parser'
+import { parseTimePeriods } from '../../parser'
 import { handleScheduleMessage } from '../helpers'
 import { CreateScheduleNode } from '../types'
 
 interface CreateScheduleNodeDef extends NodeDef {
   hoursFrom: string
   hoursTo: string
-  numMtus: string
+  numTimePeriods: string
   mode: string
   priority: string
   lowerBound: string
@@ -25,7 +25,7 @@ const nodeInit: NodeInitializer = (RED): void => {
       name: config.name,
       hoursFrom: parseInt(config.hoursFrom),
       hoursTo: parseInt(config.hoursTo),
-      numMtus: parseInt(config.numMtus),
+      numTimePeriods: parseInt(config.numTimePeriods),
       mode: config.mode as ScheduleMode,
       priority: parseInt(config.priority),
       lowerBound: config.lowerBound ? parseFloat(config.lowerBound) : undefined,
@@ -50,8 +50,8 @@ const nodeInit: NodeInitializer = (RED): void => {
         done()
       } else {
         // Normal message, create schedule and send output
-        const mtus = parseMtus(msg.payload)
-        const schedule = makeSchedule(mtus, currentScheduleOptions)
+        const timePeriods = parseTimePeriods(msg.payload)
+        const schedule = makeSchedule(timePeriods, currentScheduleOptions)
 
         handleScheduleMessage(this, schedule, msg, send, done)
       }
