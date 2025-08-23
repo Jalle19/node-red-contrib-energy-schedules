@@ -12,7 +12,7 @@ depending on the energy price, which you can then use in your home automation se
 
 * flexible input format
   * takes price data in a simple input format, which allows you to ingest price data from any source, e.g. Nord Pool
-  * price data is divided into _market time units_, not hours, meaning it works with e.g. 15 minute time units too
+  * price data is divided into _time periods_, not hours, meaning it works with e.g. 15 minute time units too
 * advanced scheduling options
   * can be limited to a certain timespan during the day, e.g. 06-22
   * can select the _n_ cheapest or most expensive time units from the selected timespan, e.g. pick the 6 most expensive hours
