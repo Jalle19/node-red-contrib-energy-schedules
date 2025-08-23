@@ -1,29 +1,29 @@
 import { describe, expect, it } from '@jest/globals'
 import fs from 'node:fs'
-import { parseMtus } from '../src/parser'
+import { parseTimePeriods } from '../src/parser'
 import { makeSchedule, makeTakeAllSchedule, ScheduleMode } from '../src/schedule'
 import { mergeSchedules } from '../src/merger'
 
-const MTUS_24HOURS = fs.readFileSync('tests/resources/mtus.24hours.json').toString()
+const TIME_PERIODS_24HOURS = fs.readFileSync('tests/resources/timePeriods.24hours.json').toString()
 
 describe('merger tests', () => {
   it('merges non-overlapping schedules correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(timePeriods, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
 
-    const schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(timePeriods, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
     })
@@ -50,27 +50,27 @@ describe('merger tests', () => {
   })
 
   it('merges overlapping schedules according to priority', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(timePeriods, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 1,
     })
 
-    const schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(timePeriods, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 2,
+      numTimePeriods: 2,
       mode: ScheduleMode.LOWEST,
       priority: 2,
     })
 
-    const schedule3 = makeTakeAllSchedule(mtus, {
+    const schedule3 = makeTakeAllSchedule(timePeriods, {
       name: 'neutral',
       priority: 0,
     })
@@ -97,22 +97,22 @@ describe('merger tests', () => {
   })
 
   it('merges overlapping schedules with equal priority', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(timePeriods, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
 
-    const schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(timePeriods, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 2,
+      numTimePeriods: 2,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -134,22 +134,22 @@ describe('merger tests', () => {
   })
 
   it('renames items correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule1 = makeSchedule(mtus, {
+    const schedule1 = makeSchedule(timePeriods, {
       name: 'cheap1',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
 
-    const schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(timePeriods, {
       name: 'cheap2',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 2,
+      numTimePeriods: 2,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })

@@ -4,4 +4,4 @@ export type MarketTimeUnit = {
   value: number
 }
 
-export type MarketTimeUnits = MarketTimeUnit[]
+export type TimePeriods = MarketTimeUnit[]

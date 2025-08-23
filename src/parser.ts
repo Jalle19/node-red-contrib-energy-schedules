@@ -1,20 +1,20 @@
-import { MarketTimeUnits } from './mtu'
+import { TimePeriods } from './timePeriod'
 
-export const parseMtus = (mtus: unknown): MarketTimeUnits => {
+export const parseTimePeriods = (timePeriods: unknown): TimePeriods => {
   // Handle both JSON and partially hydrated input (timestamps as strings)
-  if (typeof mtus === 'string') {
-    return JSON.parse(mtus, (key, value) => {
+  if (typeof timePeriods === 'string') {
+    return JSON.parse(timePeriods, (key, value) => {
       return handleField(key, value)
-    }) as MarketTimeUnits
-  } else if (Array.isArray(mtus)) {
-    return mtus.map((mtu) => {
+    }) as TimePeriods
+  } else if (Array.isArray(timePeriods)) {
+    return timePeriods.map((timePeriod) => {
       return {
         // eslint-disable-next-line
-        start: handleField('start', mtu['start']) as Date,
+        start: handleField('start', timePeriod['start']) as Date,
         // eslint-disable-next-line
-        end: handleField('end', mtu['end']) as Date,
+        end: handleField('end', timePeriod['end']) as Date,
         // eslint-disable-next-line
-        value: mtu['value'],
+        value: timePeriod['value'],
       }
     })
   }

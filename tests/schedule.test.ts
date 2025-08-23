@@ -1,20 +1,20 @@
 import { describe, expect, it } from '@jest/globals'
 import fs from 'node:fs'
 import { getScheduleItemSummary, makeSchedule, ScheduleMode } from '../src/schedule'
-import { parseMtus } from '../src/parser'
+import { parseTimePeriods } from '../src/parser'
 
-const MTUS_24HOURS = fs.readFileSync('tests/resources/mtus.24hours.json').toString()
-const MTUS_48HOURS = fs.readFileSync('tests/resources/mtus.48hours.json').toString()
+const TIME_PERIODS_24HOURS = fs.readFileSync('tests/resources/timePeriods.24hours.json').toString()
+const TIME_PERIODS_48HOURS = fs.readFileSync('tests/resources/timePeriods.48hours.json').toString()
 
 describe('schedules are correctly created', () => {
   it('generates 4 lowest value items correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -25,13 +25,13 @@ describe('schedules are correctly created', () => {
   })
 
   it('generates 4 highest value items correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
     })
@@ -42,13 +42,13 @@ describe('schedules are correctly created', () => {
   })
 
   it('applies lower bound correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       lowerBound: 10.75,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
@@ -59,11 +59,11 @@ describe('schedules are correctly created', () => {
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([7, 8])
 
     // Try with lower bound 0 too
-    const schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(timePeriods, {
       name: 'expensive',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       lowerBound: 0,
       mode: ScheduleMode.HIGHEST,
       priority: 0,
@@ -75,13 +75,13 @@ describe('schedules are correctly created', () => {
   })
 
   it('applies upper bound correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       upperBound: 7,
       mode: ScheduleMode.LOWEST,
       priority: 0,
@@ -92,11 +92,11 @@ describe('schedules are correctly created', () => {
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([22, 23])
 
     // Try with upper bound 0 too
-    const schedule2 = makeSchedule(mtus, {
+    const schedule2 = makeSchedule(timePeriods, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       upperBound: 0,
       mode: ScheduleMode.LOWEST,
       priority: 0,
@@ -108,13 +108,13 @@ describe('schedules are correctly created', () => {
   })
 
   it('handles hours from and to correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'cheap',
       hoursFrom: 6,
       hoursTo: 12,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -125,13 +125,13 @@ describe('schedules are correctly created', () => {
   })
 
   it('handles multiple days correctly', () => {
-    const mtus = parseMtus(MTUS_48HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_48HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'two-day-cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 4,
+      numTimePeriods: 4,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
@@ -150,13 +150,13 @@ describe('schedules are correctly created', () => {
 
 describe('schedule item summary', () => {
   it('is calculated correctly', () => {
-    const mtus = parseMtus(MTUS_24HOURS)
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS)
 
-    const schedule = makeSchedule(mtus, {
+    const schedule = makeSchedule(timePeriods, {
       name: 'cheap',
       hoursFrom: 0,
       hoursTo: 24,
-      numMtus: 6,
+      numTimePeriods: 6,
       mode: ScheduleMode.LOWEST,
       priority: 0,
     })
