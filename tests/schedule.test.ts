@@ -4,6 +4,7 @@ import { getScheduleItemSummary, makeSchedule, ScheduleMode } from '../src/sched
 import { parseTimePeriods } from '../src/parser'
 
 const TIME_PERIODS_24HOURS = fs.readFileSync('tests/resources/timePeriods.24hours.json').toString()
+const TIME_PERIODS_24HOURS_P15M = fs.readFileSync('tests/resources/timePeriods.24hours.P15M.json').toString()
 const TIME_PERIODS_48HOURS = fs.readFileSync('tests/resources/timePeriods.48hours.json').toString()
 
 describe('schedules are correctly created', () => {
@@ -22,6 +23,52 @@ describe('schedules are correctly created', () => {
     expect(schedule.name).toEqual('cheap')
     expect(schedule.items.length).toEqual(4)
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([4, 5, 22, 23])
+  })
+
+  it('generates lowest P15M value items correctly', () => {
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS_P15M)
+
+    const schedule = makeSchedule(timePeriods, {
+      name: 'cheap',
+      hoursFrom: 0,
+      hoursTo: 24,
+      numTimePeriods: 24,
+      mode: ScheduleMode.LOWEST,
+      priority: 0,
+    })
+
+    expect(schedule.name).toEqual('cheap')
+    expect(schedule.items.length).toEqual(24)
+    expect(
+      schedule.items.map((item) => {
+        return [item.start.getHours(), item.start.getMinutes()]
+      }),
+    ).toEqual([
+      [0, 0],
+      [0, 15],
+      [1, 0],
+      [1, 15],
+      [1, 30],
+      [1, 45],
+      [2, 0],
+      [2, 15],
+      [2, 30],
+      [2, 45],
+      [3, 0],
+      [3, 15],
+      [3, 30],
+      [3, 45],
+      [4, 0],
+      [4, 15],
+      [4, 30],
+      [4, 45],
+      [5, 0],
+      [5, 15],
+      [5, 30],
+      [5, 45],
+      [6, 0],
+      [6, 15],
+    ])
   })
 
   it('generates 4 highest value items correctly', () => {
