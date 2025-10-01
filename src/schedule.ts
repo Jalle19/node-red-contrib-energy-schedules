@@ -93,9 +93,7 @@ export const getDaySlices = (timePeriods: TimePeriods): TimePeriods[] => {
 
 const getHourSlice = (timePeriods: TimePeriods, hoursFrom: number, hoursTo: number): TimePeriods => {
   return timePeriods.filter((period) => {
-    return (
-      period.start.getHours() >= hoursFrom && period.end.getHours() <= hoursTo && period.start.getHours() <= hoursTo
-    )
+    return period.start.getHours() >= hoursFrom && period.end.getHours() <= hoursTo && period.start.getHours() < hoursTo
   })
 }
 

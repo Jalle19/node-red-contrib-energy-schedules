@@ -171,6 +171,26 @@ describe('schedules are correctly created', () => {
     expect(schedule.items.map((item) => item.start.getHours())).toEqual([6, 9, 10, 11])
   })
 
+  it('slices data by hours correctly', () => {
+    const timePeriods = parseTimePeriods(TIME_PERIODS_24HOURS_P15M)
+
+    // Pick all time periods between 20.00-22.00
+    const schedule = makeSchedule(timePeriods, {
+      name: 'cheap',
+      hoursFrom: 20,
+      hoursTo: 22,
+      numTimePeriods: 8,
+      mode: ScheduleMode.LOWEST,
+      priority: 0,
+    })
+
+    // Verify first and last item is what we expect
+    expect(schedule.name).toEqual('cheap')
+    expect(schedule.items.length).toEqual(8)
+    expect(schedule.items[0].value).toEqual(29.125)
+    expect(schedule.items[7].value).toEqual(7.148999999999999)
+  })
+
   it('handles multiple days correctly', () => {
     const timePeriods = parseTimePeriods(TIME_PERIODS_48HOURS)
 
